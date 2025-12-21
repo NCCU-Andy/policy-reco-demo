@@ -3,884 +3,1613 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>法國巴黎人壽｜保單推薦系統 Demo（相似個案 + 理專報告）</title>
+  <title>法國巴黎人壽｜智能保單推薦系統 Demo</title>
   <style>
     :root{
-      --bg:#f6f7f7;
-      --ink:#0f172a;
-      --muted:#475569;
-      --green:#0b6b57;
-      --soft:#e7f4f0;
-      --card:#ffffff;
-      --shadow:0 10px 25px rgba(2,6,23,.08);
-      --r:18px;
+      --primary:#0b6b57;
+      --primary-light:#1aa184;
+      --primary-pale:#e7f4f0;
+      --accent:#f59e0b;
+      --bg-main:#f8fafc;
+      --bg-card:#ffffff;
+      --text-primary:#0f172a;
+      --text-secondary:#64748b;
+      --text-muted:#94a3b8;
+      --border:#e2e8f0;
+      --shadow-sm:0 1px 3px rgba(0,0,0,0.05);
+      --shadow:0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg:0 10px 30px rgba(0,0,0,0.12);
+      --radius:12px;
+      --radius-lg:16px;
     }
-    *{box-sizing:border-box}
+
+    *{box-sizing:border-box; margin:0; padding:0;}
     body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Noto Sans TC", Arial, sans-serif;
-      color:var(--ink);
-      background: linear-gradient(180deg, #eef7f4 0%, var(--bg) 45%);
-    }
-    header{
-      max-width:1240px;
-      margin:0 auto;
-      padding:22px 16px 10px;
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-end;
-      flex-wrap:wrap;
-    }
-    .brand{display:flex; gap:12px; align-items:center;}
-    .logo{
-      width:44px;height:44px;border-radius:14px;
-      background: radial-gradient(circle at 30% 30%, #1aa184, var(--green));
-      box-shadow: var(--shadow);
-    }
-    h1{margin:0;font-size:20px}
-    .sub{margin-top:6px;color:var(--muted);font-size:12px;line-height:1.6}
-    .pill{
-      display:inline-flex; gap:6px; align-items:center;
-      padding:6px 10px; border-radius:999px;
-      background: rgba(11,107,87,.10);
-      color: var(--green);
-      font-weight:900; font-size:12px;
-      border:1px solid rgba(11,107,87,.25);
-      white-space:nowrap;
-    }
-
-    main{
-      max-width:1240px;
-      margin:0 auto;
-      padding:12px 16px 40px;
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:14px;
-    }
-    @media (max-width: 980px){
-      main{grid-template-columns:1fr}
-    }
-
-    .panel{
-      background:var(--card);
-      border-radius: var(--r);
-      box-shadow: var(--shadow);
-      border:1px solid rgba(2,6,23,.06);
-      overflow:hidden;
-    }
-    .panel-head{
-      padding:14px 14px 10px;
-      border-bottom:1px solid rgba(2,6,23,.06);
-      display:flex; justify-content:space-between; gap:10px; align-items:flex-start;
-    }
-    .panel-head strong{font-size:14px}
-    .panel-head span{display:block; color:var(--muted); font-size:12px; margin-top:4px; line-height:1.5}
-    .badge{
-      border:2px solid var(--green);
-      color:var(--green);
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:900;
-      background:#fff;
-      white-space:nowrap;
-    }
-
-    .content{padding:14px}
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:10px;
-    }
-    @media (max-width: 980px){ .grid{grid-template-columns: repeat(2, 1fr);} }
-    @media (max-width: 560px){ .grid{grid-template-columns: 1fr;} }
-
-    .card{
-      border:3px solid var(--green);
-      border-radius: var(--r);
-      padding:12px;
-      background: linear-gradient(180deg, #ffffff 0%, #fbfdfc 100%);
-      position:relative;
-      min-height: 170px;
-    }
-    .cap{
-      position:absolute;
-      left:12px; top:-14px;
-      background:#fff;
-      border:3px solid var(--green);
-      padding:6px 12px;
-      border-radius:999px;
-      font-size:13px;
-      font-weight:900;
-      box-shadow: 0 6px 16px rgba(2,6,23,.06);
-    }
-
-    /* option grid like your screenshot (no dropdown blanks) */
-    .opt-grid{
-      margin-top:22px;
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap:10px;
-    }
-    .opt-grid.cols-3{ grid-template-columns: repeat(3, minmax(0,1fr)); }
-    .opt-grid.cols-4{ grid-template-columns: repeat(4, minmax(0,1fr)); }
-    @media (max-width: 560px){
-      .opt-grid.cols-4{ grid-template-columns: repeat(2, minmax(0,1fr)); }
-      .opt-grid.cols-3{ grid-template-columns: repeat(2, minmax(0,1fr)); }
-    }
-
-    .opt{
-      border:2px solid rgba(2,6,23,.12);
-      background:#fff;
-      padding:10px 10px;
-      border-radius:14px;
-      cursor:pointer;
-      font-size:13px;
-      font-weight:800;
-      user-select:none;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      min-height:44px;
-      position:relative;
-      transition:.15s transform, .15s background, .15s border-color;
-    }
-    .opt:hover{transform: translateY(-1px); border-color: rgba(11,107,87,.55)}
-    .opt[aria-pressed="true"]{
-      border-color: var(--green);
-      background: var(--soft);
-      box-shadow: 0 8px 18px rgba(11,107,87,.14);
-    }
-    .opt[aria-pressed="true"]::after{
-      content:"✓";
-      position:absolute;
-      right:8px; top:8px;
-      width:20px;height:20px;border-radius:999px;
-      background: var(--green);
-      color:#fff;
-      display:grid; place-items:center;
-      font-weight:900;
-      font-size:13px;
-    }
-
-    input[type="text"]{
-      width:100%;
-      margin-top:22px;
-      border:2px solid rgba(2,6,23,.12);
-      border-radius:14px;
-      padding:12px 12px;
-      font-size:13px;
-      outline:none;
-      background:#fff;
-    }
-    input[type="text"]:focus{
-      border-color: var(--green);
-      box-shadow: 0 0 0 4px rgba(11,107,87,.12);
-    }
-
-    .help{
-      margin-top:8px;
-      font-size:12px;
-      color:var(--muted);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", Arial, sans-serif;
+      color:var(--text-primary);
+      background:var(--bg-main);
       line-height:1.6;
     }
-    .help strong{color:#0f172a}
 
-    .need-grid{
-      margin-top:22px;
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap:10px;
+    /* Header */
+    .header{
+      background:linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color:#fff;
+      padding:24px 0;
+      box-shadow:var(--shadow);
     }
-    .need{
-      border:2px dashed rgba(11,107,87,.45);
-      border-radius:16px;
-      padding:10px;
+    .header-content{
+      max-width:1400px;
+      margin:0 auto;
+      padding:0 24px;
       display:flex;
-      align-items:flex-start;
-      gap:10px;
-      cursor:pointer;
-      background:#fff;
-      transition:.15s background, .15s border-color;
+      justify-content:space-between;
+      align-items:center;
+      gap:20px;
+      flex-wrap:wrap;
     }
-    .need input{width:18px;height:18px;margin-top:2px}
-    .need strong{font-size:13px}
-    .need small{display:block;color:var(--muted);font-size:11px;margin-top:2px;line-height:1.4}
-    .need.on{ background: var(--soft); border-color: var(--green); }
+    .brand{display:flex; gap:16px; align-items:center;}
+    .logo{
+      width:48px; height:48px; border-radius:12px;
+      background:linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.9) 100%);
+      display:grid; place-items:center;
+      font-size:24px; font-weight:900;
+      color:var(--primary);
+      box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-text h1{
+      font-size:22px; font-weight:700; margin-bottom:4px;
+    }
+    .brand-text p{
+      font-size:13px; opacity:0.95; font-weight:400;
+    }
+    .status-badge{
+      background:rgba(255,255,255,0.2);
+      padding:8px 16px;
+      border-radius:20px;
+      font-size:12px;
+      font-weight:600;
+      border:1px solid rgba(255,255,255,0.3);
+      backdrop-filter:blur(10px);
+    }
 
-    .consent{
-      display:flex; gap:10px; align-items:flex-start;
+    /* Container */
+    .container{
+      max-width:1400px;
+      margin:0 auto;
+      padding:32px 24px;
+    }
+
+    /* Progress Steps */
+    .progress-steps{
+      display:flex;
+      justify-content:space-between;
+      margin-bottom:28px;
+      position:relative;
+    }
+    .progress-steps::before{
+      content:"";
+      position:absolute;
+      top:20px;
+      left:0;
+      right:0;
+      height:3px;
+      background:var(--border);
+      z-index:0;
+    }
+    .step{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:8px;
+      position:relative;
+      z-index:1;
+      background:var(--bg-main);
+      padding:0 12px;
+    }
+    .step-number{
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      background:var(--bg-card);
+      border:3px solid var(--border);
+      display:grid;
+      place-items:center;
+      font-weight:700;
+      font-size:16px;
+      color:var(--text-muted);
+      transition:all 0.3s;
+    }
+    .step.active .step-number{
+      background:var(--primary);
+      border-color:var(--primary);
+      color:#fff;
+      box-shadow:0 0 0 4px var(--primary-pale);
+    }
+    .step.completed .step-number{
+      background:var(--primary-light);
+      border-color:var(--primary-light);
+      color:#fff;
+    }
+    .step-label{
+      font-size:12px;
+      font-weight:600;
+      color:var(--text-muted);
+      text-align:center;
+    }
+    .step.active .step-label{color:var(--primary);}
+
+    /* Layout */
+    .layout{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:24px;
+      align-items:start;
+    }
+    @media (max-width: 1024px){
+      .layout{grid-template-columns:1fr;}
+    }
+
+    /* Card */
+    .card{
+      background:var(--bg-card);
+      border-radius:var(--radius-lg);
+      box-shadow:var(--shadow);
+      border:1px solid var(--border);
+      overflow:hidden;
+      transition:box-shadow 0.3s;
+    }
+    .card:hover{ box-shadow:var(--shadow-lg); }
+
+    .card-header{
+      padding:20px 24px;
+      border-bottom:1px solid var(--border);
+      background:linear-gradient(to bottom, #fafbfc 0%, #fff 100%);
+    }
+    .card-header h2{
+      font-size:18px;
+      font-weight:700;
+      color:var(--text-primary);
+      margin-bottom:4px;
+    }
+    .card-header p{
+      font-size:13px;
+      color:var(--text-secondary);
+    }
+
+    .card-body{ padding:24px; }
+
+    /* Consent Box */
+    .consent-box{
+      background:linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border:2px solid #fbbf24;
+      border-radius:var(--radius);
+      padding:16px;
+      display:flex;
+      gap:12px;
+      align-items:start;
+      margin-bottom:24px;
+    }
+    .consent-box input{
+      width:20px; height:20px; margin-top:2px;
+      cursor:pointer; accent-color:var(--primary);
+    }
+    .consent-box .text{ flex:1; font-size:13px; line-height:1.6; }
+    .consent-box strong{ color:#92400e; display:block; margin-bottom:4px; }
+
+    /* Form Grid */
+    .form-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+      gap:20px;
+      margin-bottom:24px;
+    }
+
+    /* Form Field */
+    .field{
+      background:var(--bg-main);
+      border:2px solid var(--border);
+      border-radius:var(--radius);
+      padding:16px;
+      transition:all 0.3s;
+      position:relative;
+    }
+    .field:hover{ border-color:var(--primary-light); }
+
+    /* ✓ 動畫回饋 */
+    @keyframes pop{
+      0%{ transform:scale(.8); opacity:0;}
+      100%{ transform:scale(1); opacity:1;}
+    }
+    .field.filled{
+      border-color:var(--primary);
+      background:var(--primary-pale);
+    }
+    .field.filled::after{
+      content:"✓";
+      position:absolute;
+      right:12px; top:12px;
+      width:22px; height:22px;
+      display:grid; place-items:center;
+      border-radius:999px;
+      background:var(--primary);
+      color:#fff;
+      font-weight:900;
+      font-size:12px;
+      animation: pop .18s ease-out;
+      box-shadow:0 6px 16px rgba(11,107,87,.18);
+    }
+
+    .field-label{
+      font-size:13px;
+      font-weight:700;
+      color:var(--text-primary);
+      margin-bottom:12px;
+      display:block;
+    }
+
+    /* Options Grid */
+    .options{ display:grid; gap:8px; }
+    .options.cols-2{grid-template-columns:repeat(2, 1fr);}
+    .options.cols-3{grid-template-columns:repeat(3, 1fr);}
+    .options.cols-4{grid-template-columns:repeat(2, 1fr);}
+    @media (min-width: 640px){
+      .options.cols-4{grid-template-columns:repeat(4, 1fr);}
+    }
+
+    .option-btn{
+      background:#fff;
+      border:2px solid var(--border);
+      border-radius:8px;
+      padding:10px 12px;
+      font-size:13px;
+      font-weight:600;
+      color:var(--text-primary);
+      cursor:pointer;
+      transition:all 0.2s;
+      text-align:center;
+      position:relative;
+      user-select:none;
+    }
+    .option-btn:hover{
+      border-color:var(--primary);
+      transform:translateY(-2px);
+      box-shadow:var(--shadow-sm);
+    }
+    .option-btn[aria-pressed="true"]{
+      background:var(--primary);
+      border-color:var(--primary);
+      color:#fff;
+      box-shadow:0 4px 12px rgba(11,107,87,0.25);
+    }
+    .option-btn[aria-pressed="true"]::after{
+      content:"✓";
+      position:absolute;
+      right:6px; top:6px;
+      width:18px; height:18px;
+      background:rgba(255,255,255,0.3);
+      border-radius:50%;
+      display:grid; place-items:center;
+      font-size:11px;
+    }
+
+    /* Input */
+    .text-input{
+      width:100%;
       padding:12px;
-      border-radius:16px;
-      background: #fff;
-      border:2px solid rgba(2,6,23,.08);
+      border:2px solid var(--border);
+      border-radius:8px;
+      font-size:14px;
+      font-family:inherit;
+      transition:all 0.2s;
+      background:#fff;
+    }
+    .text-input:focus{
+      outline:none;
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px var(--primary-pale);
+    }
+
+    .field-hint{
+      margin-top:8px;
+      font-size:12px;
+      color:var(--text-secondary);
+      line-height:1.5;
+    }
+    .field-hint strong{color:var(--primary);}
+
+    /* Checkbox Cards */
+    .checkbox-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+      gap:12px;
+    }
+    .checkbox-card{
+      background:#fff;
+      border:2px solid var(--border);
+      border-radius:var(--radius);
+      padding:14px;
+      display:flex;
+      gap:12px;
+      align-items:start;
+      cursor:pointer;
+      transition:all 0.2s;
+    }
+    .checkbox-card:hover{
+      border-color:var(--primary);
+      transform:translateY(-2px);
+    }
+    .checkbox-card.checked{
+      border-color:var(--primary);
+      background:var(--primary-pale);
+    }
+    .checkbox-card input{
+      width:20px; height:20px; margin-top:2px;
+      cursor:pointer; accent-color:var(--primary);
+    }
+    .checkbox-card .label{ flex:1; }
+    .checkbox-card .label strong{
+      display:block;
+      font-size:14px;
+      color:var(--text-primary);
+      margin-bottom:2px;
+    }
+    .checkbox-card .label small{
+      font-size:11px;
+      color:var(--text-secondary);
+      line-height:1.4;
+    }
+
+    /* Actions */
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+      align-items:center;
+    }
+    .btn{
+      padding:12px 18px;
+      border-radius:8px;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+      transition:all 0.2s;
+      border:none;
+      font-family:inherit;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .btn-primary{
+      background:linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color:#fff;
+      box-shadow:0 4px 12px rgba(11,107,87,0.25);
+    }
+    .btn-primary:hover:not(:disabled){
+      transform:translateY(-2px);
+      box-shadow:0 6px 20px rgba(11,107,87,0.35);
+    }
+    .btn-primary:disabled{ opacity:0.5; cursor:not-allowed; }
+    .btn-secondary{
+      background:#fff;
+      color:var(--text-primary);
+      border:2px solid var(--border);
+    }
+    .btn-secondary:hover:not(:disabled){
+      border-color:var(--primary);
+      color:var(--primary);
+      transform:translateY(-2px);
+    }
+    .btn-secondary:disabled{ opacity:0.5; cursor:not-allowed; }
+
+    .alert{
+      margin-top:16px;
+      padding:12px 16px;
+      border-radius:8px;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .alert-warning{
+      background:#fef3c7;
+      color:#92400e;
+      border:1px solid #fbbf24;
+    }
+
+    /* Output Section */
+    .output-section{
+      position:sticky;
+      top:24px;
+    }
+
+    .section-title{
+      font-size:12px;
+      font-weight:800;
+      color:var(--text-secondary);
+      text-transform:uppercase;
+      letter-spacing:0.5px;
       margin-bottom:12px;
     }
-    .consent input{width:18px;height:18px;margin-top:2px}
-    .consent p{margin:0;font-size:12px;color:var(--muted);line-height:1.6}
 
-    .actions{
-      display:flex; flex-wrap:wrap; gap:10px;
+    .summary-card{
+      background:linear-gradient(135deg, var(--primary-pale) 0%, #fff 100%);
+      border:2px solid var(--primary);
+      border-radius:var(--radius);
+      padding:16px;
+      margin-bottom:16px;
+      font-size:13px;
+      line-height:1.6;
+      color:var(--text-primary);
+    }
+    .summary-card strong{ color:var(--primary); }
+
+    .result-card{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:16px;
+      margin-bottom:12px;
+      transition:all 0.2s;
+    }
+    .result-card:hover{
+      box-shadow:var(--shadow);
+      transform:translateY(-2px);
+    }
+    .result-card h3{
+      font-size:15px;
+      color:var(--text-primary);
+      margin-bottom:8px;
+    }
+    .result-card .meta{
+      font-size:12px;
+      color:var(--text-secondary);
+      line-height:1.6;
+      margin-bottom:8px;
+    }
+    .result-card .tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .tag{
+      background:var(--primary-pale);
+      color:var(--primary);
+      padding:4px 10px;
+      border-radius:12px;
+      font-size:11px;
+      font-weight:700;
+      border:1px solid rgba(11,107,87,0.2);
+    }
+
+    .report-box{
+      background:#1e293b;
+      color:#e2e8f0;
+      border-radius:var(--radius);
+      padding:16px;
+      font-size:13px;
+      line-height:1.8;
+      white-space:pre-wrap;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+      max-height:420px;
+      overflow-y:auto;
       margin-top:12px;
     }
-    .primary, .ghost{
+
+    .empty-state{
+      text-align:center;
+      padding:28px 16px;
+      color:var(--text-muted);
+      font-size:14px;
+    }
+
+    /* ===== 新增：左側補齊卡片 ===== */
+    .left-stack{
+      display:grid;
+      gap:14px;
+    }
+    .mini{
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      background:#fff;
+      box-shadow:var(--shadow-sm);
+      overflow:hidden;
+    }
+    .mini .mini-head{
+      padding:14px 16px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:linear-gradient(to bottom, #fafbfc 0%, #fff 100%);
+    }
+    .mini .mini-head h3{
+      font-size:14px;
+      font-weight:900;
+    }
+    .mini .mini-body{ padding:14px 16px; font-size:13px; color:var(--text-secondary); }
+    .progress-wrap{ display:flex; gap:12px; align-items:center; }
+    .bar{
+      flex:1;
+      height:10px;
+      background:var(--border);
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg, var(--primary), var(--primary-light));
+      transition:width .25s ease;
+    }
+    .pct{
+      font-weight:900;
+      color:var(--primary);
+      min-width:52px;
+      text-align:right;
+    }
+
+    .kv{
+      display:grid;
+      grid-template-columns: 92px 1fr;
+      gap:8px 12px;
+      font-size:12px;
+      color:var(--text-secondary);
+    }
+    .kv b{ color:var(--text-primary); }
+
+    /* Accordion / FAQ */
+    .acc-item{
+      border:1px solid var(--border);
+      border-radius:12px;
+      overflow:hidden;
+      margin-bottom:10px;
+      background:#fff;
+    }
+    .acc-btn{
+      width:100%;
+      text-align:left;
+      padding:12px 12px;
+      background:#fff;
       border:none;
+      cursor:pointer;
+      font-weight:900;
+      font-size:13px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .acc-btn span{ color:var(--text-muted); font-weight:900; }
+    .acc-panel{
+      padding:0 12px 12px;
+      color:var(--text-secondary);
+      font-size:12px;
+      line-height:1.65;
+      display:none;
+    }
+    .acc-item.open .acc-panel{ display:block; }
+    .acc-item.open .acc-btn span{ transform:rotate(180deg); }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+    }
+    th, td{
+      border:1px solid var(--border);
+      padding:8px;
+      vertical-align:top;
+    }
+    th{
+      background:#f8fafc;
+      color:var(--text-secondary);
+      font-weight:900;
+      text-align:left;
+    }
+
+    /* 情境推薦卡 */
+    .insight{
+      padding:12px;
       border-radius:14px;
+      border:1px dashed rgba(11,107,87,.35);
+      background:linear-gradient(135deg, rgba(11,107,87,.06), #fff);
+      color:var(--text-secondary);
+      font-size:13px;
+      line-height:1.6;
+    }
+    .insight b{ color:var(--primary); }
+
+    /* ===== 新增：右側 Tabs + Loader ===== */
+    .tabs{
+      display:flex;
+      gap:8px;
+      margin-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:2px solid var(--border);
+      background:#fff;
+      padding:10px 12px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:900;
+      cursor:pointer;
+      color:var(--text-primary);
+      transition:.15s;
+    }
+    .tab.active{
+      border-color:var(--primary);
+      color:var(--primary);
+      background:var(--primary-pale);
+    }
+    .tab-panel{ display:none; }
+    .tab-panel.active{ display:block; }
+
+    .loader{
+      display:none;
+      margin:12px 0 16px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:12px;
+      background:#fff;
+    }
+    .loader.show{ display:block; }
+    .loader-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+      font-size:12px;
+      color:var(--text-secondary);
+      font-weight:800;
+    }
+    .loader-bar{
+      height:10px;
+      background:var(--border);
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .loader-bar > div{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg, var(--accent), var(--primary-light));
+      transition:width .12s ease;
+    }
+
+    .tldr{
+      border:1px solid rgba(245,158,11,.35);
+      background:linear-gradient(135deg, #fff7ed, #fff);
+      border-radius:14px;
+      padding:12px;
+      margin-bottom:12px;
+      font-size:12px;
+      color:var(--text-secondary);
+      line-height:1.65;
+    }
+    .tldr strong{ color:#b45309; }
+
+    /* 浮動操作列 */
+    .fab{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      display:none;
+      gap:10px;
+      z-index:999;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .fab.show{ display:flex; }
+    .fab .fab-btn{
+      border:none;
+      border-radius:999px;
       padding:12px 14px;
       font-weight:900;
       cursor:pointer;
+      box-shadow:var(--shadow-lg);
       font-size:13px;
-    }
-    .primary{
-      background: var(--green);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:#111827;
       color:#fff;
-      box-shadow: 0 10px 22px rgba(11,107,87,.18);
     }
-    .primary:disabled{opacity:.5; cursor:not-allowed; box-shadow:none;}
-    .ghost{
+    .fab .fab-btn.alt{
       background:#fff;
-      border:2px solid rgba(2,6,23,.12);
-      color:var(--ink);
+      color:var(--text-primary);
+      border:2px solid var(--border);
+      box-shadow:var(--shadow);
     }
 
-    /* RIGHT */
-    .side{padding:14px}
-    .row{
-      border:1px solid rgba(2,6,23,.08);
-      border-radius:14px;
-      padding:10px;
-      background:#fff;
-      margin-bottom:10px;
-    }
-    .k{font-size:11px;color:var(--muted)}
-    .v{margin-top:4px;font-weight:900;font-size:13px}
-    .cards{display:grid; gap:10px;}
-    .reco-card{
-      border:1px solid rgba(2,6,23,.10);
-      border-radius:16px;
-      padding:12px;
-      background:#fff;
-    }
-    .reco-card h3{margin:0;font-size:14px}
-    .meta{margin-top:6px;color:var(--muted);font-size:12px;line-height:1.5}
-    .tags{margin-top:10px; display:flex; flex-wrap:wrap; gap:6px;}
-    .tag{
-      font-size:11px;
-      padding:5px 9px;
-      border-radius:999px;
-      background: rgba(11,107,87,.10);
-      color: var(--green);
-      border:1px solid rgba(11,107,87,.25);
-      font-weight:900;
-    }
-    .ai-box{
-      background: #0b1220;
-      color:#e2e8f0;
-      border-radius:16px;
-      padding:12px;
+    /* Toast */
+    .toast{
+      position:fixed;
+      left:18px;
+      bottom:18px;
+      padding:10px 12px;
+      background:#111827;
+      color:#fff;
+      border-radius:12px;
       font-size:12px;
-      line-height:1.65;
-      white-space:pre-wrap;
-      min-height:180px;
+      box-shadow:var(--shadow-lg);
+      display:none;
+      z-index:999;
+      max-width:70vw;
     }
-    .warn{color:#b45309}
-    .small{font-size:12px;color:var(--muted);line-height:1.6}
-    .divider{height:1px;background:rgba(2,6,23,.08);margin:10px 0;}
+    .toast.show{ display:block; }
+
+    @media (max-width: 640px){
+      .header-content{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      .progress-steps{
+        flex-wrap:wrap;
+        gap:20px;
+      }
+      .progress-steps::before{display:none;}
+      .form-grid{ grid-template-columns:1fr; }
+      .actions{ flex-direction:column; align-items:stretch; }
+      .btn{ width:100%; justify-content:center; }
+      .fab{ left:18px; right:18px; justify-content:stretch; }
+      .fab .fab-btn{ flex:1; justify-content:center; }
+    }
+
+    /* Print-friendly */
+    @media print{
+      .header, .progress-steps, .fab, .toast, .btn, .actions, .status-badge{ display:none !important; }
+      .layout{ grid-template-columns:1fr; }
+      .output-section{ position:static; }
+      .card{ box-shadow:none; border:1px solid #ddd; }
+      body{ background:#fff; }
+    }
   </style>
 </head>
 
 <body>
-<header>
-  <div class="brand">
-    <div class="logo" aria-hidden="true"></div>
-    <div>
-      <h1>法國巴黎人壽｜相似個案保單推薦系統（Demo）</h1>
-      <div class="sub">
-        以「相似客群投保輪廓」推導建議方案，並輸出「理專可讀的文字報告」。
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="brand">
+        <div class="logo">法</div>
+        <div class="brand-text">
+          <h1>法國巴黎人壽｜智能保單推薦系統</h1>
+          <p>運用相似客群投保輪廓，提供個人化保險規劃建議</p>
+        </div>
+      </div>
+      <div class="status-badge">🚀 商業競賽 Demo 版本</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Progress Steps -->
+    <div class="progress-steps">
+      <div class="step active" id="step1">
+        <div class="step-number">1</div>
+        <div class="step-label">填寫資料</div>
+      </div>
+      <div class="step" id="step2">
+        <div class="step-number">2</div>
+        <div class="step-label">分析比對</div>
+      </div>
+      <div class="step" id="step3">
+        <div class="step-number">3</div>
+        <div class="step-label">方案推薦</div>
+      </div>
+      <div class="step" id="step4">
+        <div class="step-number">4</div>
+        <div class="step-label">生成報告</div>
       </div>
     </div>
+
+    <div class="layout">
+      <!-- Left stack: Input + new helper cards -->
+      <div class="left-stack">
+        <!-- Left: Input -->
+        <div class="card">
+          <div class="card-header">
+            <h2>📋 客戶資料輸入</h2>
+            <p>請填寫以下資訊，系統將自動匹配相似客群投保輪廓</p>
+          </div>
+
+          <div class="card-body">
+            <!-- Consent -->
+            <div class="consent-box">
+              <input id="agree" type="checkbox" />
+              <div class="text">
+                <strong>⚠️ 重要聲明（Demo 版本）</strong>
+                本工具僅供概念展示：資料不會上傳伺服器；內容為輔助理解之建議，不構成投保/投資/稅務建議；實際投保以法巴保單條款、核保與銀行通路規範為準。
+              </div>
+            </div>
+
+            <!-- Form Fields -->
+            <div class="form-grid">
+              <!-- 性別 -->
+              <div class="field" data-field="gender">
+                <label class="field-label">性別</label>
+                <div class="options cols-2">
+                  <button class="option-btn" data-field="gender" data-value="生理男" aria-pressed="false">👨 生理男</button>
+                  <button class="option-btn" data-field="gender" data-value="生理女" aria-pressed="false">👩 生理女</button>
+                </div>
+              </div>
+
+              <!-- 年齡段 -->
+              <div class="field" data-field="ageBand">
+                <label class="field-label">年齡段（10歲一區間）</label>
+                <div class="options cols-4">
+                  <button class="option-btn" data-field="ageBand" data-value="0-9" aria-pressed="false">0–9</button>
+                  <button class="option-btn" data-field="ageBand" data-value="10-19" aria-pressed="false">10–19</button>
+                  <button class="option-btn" data-field="ageBand" data-value="20-29" aria-pressed="false">20–29</button>
+                  <button class="option-btn" data-field="ageBand" data-value="30-39" aria-pressed="false">30–39</button>
+                  <button class="option-btn" data-field="ageBand" data-value="40-49" aria-pressed="false">40–49</button>
+                  <button class="option-btn" data-field="ageBand" data-value="50-59" aria-pressed="false">50–59</button>
+                  <button class="option-btn" data-field="ageBand" data-value="60-69" aria-pressed="false">60–69</button>
+                  <button class="option-btn" data-field="ageBand" data-value="70+" aria-pressed="false">70+</button>
+                </div>
+              </div>
+
+              <!-- 職業 -->
+              <div class="field" data-field="jobTitle">
+                <label class="field-label">職業（輸入後自動判斷等級）</label>
+                <input id="jobTitle" type="text" class="text-input" placeholder="例如：工程師、護理師、貨車司機..." />
+                <div class="field-hint" id="jobHint">系統判斷：<strong>尚未判斷</strong></div>
+              </div>
+
+              <!-- 職業風險等級 -->
+              <div class="field" data-field="jobRisk">
+                <label class="field-label">職業風險等級（可手動調整）</label>
+                <div class="options cols-3">
+                  <button class="option-btn" data-field="jobRisk" data-value="1" aria-pressed="false">等級一</button>
+                  <button class="option-btn" data-field="jobRisk" data-value="2" aria-pressed="false">等級二</button>
+                  <button class="option-btn" data-field="jobRisk" data-value="3" aria-pressed="false">等級三</button>
+                  <button class="option-btn" data-field="jobRisk" data-value="4" aria-pressed="false">等級四</button>
+                  <button class="option-btn" data-field="jobRisk" data-value="5" aria-pressed="false">等級五</button>
+                  <button class="option-btn" data-field="jobRisk" data-value="6" aria-pressed="false">等級六</button>
+                </div>
+              </div>
+
+              <!-- 年收入 -->
+              <div class="field" data-field="income">
+                <label class="field-label">年收入</label>
+                <div class="options cols-2">
+                  <button class="option-btn" data-field="income" data-value="70萬以下" aria-pressed="false">70萬以下</button>
+                  <button class="option-btn" data-field="income" data-value="70萬到150萬" aria-pressed="false">70萬到150萬</button>
+                  <button class="option-btn" data-field="income" data-value="150萬到300萬" aria-pressed="false">150萬到300萬</button>
+                  <button class="option-btn" data-field="income" data-value="300萬以上" aria-pressed="false">300萬以上</button>
+                  <button class="option-btn" data-field="income" data-value="暫不提供" aria-pressed="false">暫不提供</button>
+                </div>
+              </div>
+
+              <!-- 家庭結構 -->
+              <div class="field" data-field="family">
+                <label class="field-label">家庭結構</label>
+                <div class="options cols-3">
+                  <button class="option-btn" data-field="family" data-value="單人戶" aria-pressed="false">單人戶</button>
+                  <button class="option-btn" data-field="family" data-value="夫妻家庭" aria-pressed="false">夫妻家庭</button>
+                  <button class="option-btn" data-field="family" data-value="單親家庭" aria-pressed="false">單親家庭</button>
+                  <button class="option-btn" data-field="family" data-value="核心家庭" aria-pressed="false">核心家庭</button>
+                  <button class="option-btn" data-field="family" data-value="祖孫家庭" aria-pressed="false">祖孫家庭</button>
+                  <button class="option-btn" data-field="family" data-value="三代家庭" aria-pressed="false">三代家庭</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 投保需求 -->
+            <div class="field" data-field="needs">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;">
+                <label class="field-label" style="margin:0;">投保需求為何？（可複選）</label>
+                <button class="btn btn-secondary" id="autoNeeds" type="button" style="padding:8px 12px; font-size:12px;">
+                  ✨ 不確定？幫我推薦
+                </button>
+              </div>
+              <div class="checkbox-grid" id="needs">
+                <label class="checkbox-card">
+                  <input type="checkbox" value="保障型保單" />
+                  <div class="label"><strong>🛡️ 保障型</strong><small>醫療/意外/重大傷病/壽險缺口補強</small></div>
+                </label>
+                <label class="checkbox-card">
+                  <input type="checkbox" value="儲蓄型保單" />
+                  <div class="label"><strong>💰 儲蓄型</strong><small>穩健資金準備、偏保守</small></div>
+                </label>
+                <label class="checkbox-card">
+                  <input type="checkbox" value="還本型保單" />
+                  <div class="label"><strong>🔄 還本型</strong><small>期滿返還設計（注意條款限制）</small></div>
+                </label>
+                <label class="checkbox-card">
+                  <input type="checkbox" value="投資型保單" />
+                  <div class="label"><strong>📈 投資型</strong><small>追求報酬、承擔波動（非保本）</small></div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+              <button class="btn btn-primary" id="run" disabled>🔍 分析並產生推薦方案</button>
+              <button class="btn btn-secondary" id="genReport" disabled>📄 生成理專報告</button>
+              <button class="btn btn-secondary" id="copyReport" disabled>📋 複製報告</button>
+              <button class="btn btn-secondary" id="reset">🔄 清除重填</button>
+            </div>
+
+            <div class="alert alert-warning" id="hint" style="display:none;"></div>
+          </div>
+        </div>
+
+        <!-- 新增：進度追蹤 -->
+        <div class="mini">
+          <div class="mini-head">
+            <h3>✅ 填寫進度</h3>
+            <div style="font-size:12px;color:var(--text-muted);font-weight:900;" id="draftState">草稿：未儲存</div>
+          </div>
+          <div class="mini-body">
+            <div class="progress-wrap">
+              <div class="bar"><div id="progressFill"></div></div>
+              <div class="pct" id="progressPct">0%</div>
+            </div>
+            <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+              必填：性別／年齡段／職業等級／年收入／家庭結構 + 勾選聲明
+            </div>
+          </div>
+        </div>
+
+        <!-- 新增：快速預覽 -->
+        <div class="mini">
+          <div class="mini-head">
+            <h3>👀 即時預覽</h3>
+            <div style="font-size:12px;color:var(--text-muted);font-weight:900;" id="previewTag">尚未完成</div>
+          </div>
+          <div class="mini-body">
+            <div class="kv" id="livePreview">
+              <div>性別</div><div>—</div>
+              <div>年齡段</div><div>—</div>
+              <div>職業</div><div>—</div>
+              <div>等級</div><div>—</div>
+              <div>年收入</div><div>—</div>
+              <div>家庭</div><div>—</div>
+              <div>需求</div><div>—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 新增：情境推薦 -->
+        <div class="mini">
+          <div class="mini-head">
+            <h3>💡 情境推薦</h3>
+            <div style="font-size:12px;color:var(--text-muted);font-weight:900;">即時提示</div>
+          </div>
+          <div class="mini-body">
+            <div class="insight" id="scenarioTip">
+              先完成基本資料，系統會根據相似客群資料庫，提供「像您這樣的客戶通常會先做什麼」的提示。
+            </div>
+          </div>
+        </div>
+
+        <!-- 新增：FAQ / 說明表 -->
+        <div class="mini">
+          <div class="mini-head">
+            <h3>📚 輔助資訊</h3>
+            <div style="font-size:12px;color:var(--text-muted);font-weight:900;">可折疊</div>
+          </div>
+          <div class="mini-body">
+            <div class="acc-item" id="accWhy">
+              <button class="acc-btn" type="button">
+                為什麼需要這些資料？（FAQ）<span>▾</span>
+              </button>
+              <div class="acc-panel">
+                這些欄位的目的，是讓理專能在「合規與適配」前提下，快速理解客戶需求與風險：<br/>
+                • <b>年齡/家庭</b>：推估責任期、扶養需求、照護風險<br/>
+                • <b>職業等級</b>：影響意外/失能風險暴露與可承保條件<br/>
+                • <b>年收入</b>：協助保費可負擔性與方案規模評估（可選「暫不提供」）<br/>
+                • <b>需求偏好</b>：幫助決定先保障、再儲蓄/投資的排序<br/><br/>
+                Demo 版不會上傳任何資料；正式版會搭配 KYC/適合度問卷與條款檢核。
+              </div>
+            </div>
+
+            <div class="acc-item" id="accRisk">
+              <button class="acc-btn" type="button">
+                職業風險等級說明表<span>▾</span>
+              </button>
+              <div class="acc-panel">
+                <table>
+                  <thead>
+                    <tr><th>等級</th><th>常見型態（示例）</th><th>風險概念</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><b>1</b></td><td>行政、會計、工程師、金融內勤</td><td>多為室內工作，意外暴露較低</td></tr>
+                    <tr><td><b>2</b></td><td>業務、門市、一般服務業</td><td>外勤/移動增加，風險中低</td></tr>
+                    <tr><td><b>3</b></td><td>護理/照服、物流、技術員</td><td>體力活動提升，風險中等</td></tr>
+                    <tr><td><b>4</b></td><td>機械維修、搬運、倉儲作業</td><td>工作環境風險顯著提升</td></tr>
+                    <tr><td><b>5</b></td><td>工地、貨車司機、外送、消防</td><td>高暴露/高危險活動</td></tr>
+                    <tr><td><b>6</b></td><td>高空作業、重工、特殊危險工</td><td>極高風險，承保限制更多</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="acc-item" id="accType">
+              <button class="acc-btn" type="button">
+                保單類型快速對照表<span>▾</span>
+              </button>
+              <div class="acc-panel">
+                <table>
+                  <thead>
+                    <tr><th>類型</th><th>主要目的</th><th>理專提醒</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><b>保障型</b></td><td>醫療/意外/重大傷病/壽險缺口</td><td>先做保障排序，再談儲蓄/投資</td></tr>
+                    <tr><td><b>儲蓄型</b></td><td>資金準備、穩健累積</td><td>注意解約費用與期間安排</td></tr>
+                    <tr><td><b>還本型</b></td><td>偏好返還/期滿設計</td><td>返還條件必須對客說清楚</td></tr>
+                    <tr><td><b>投資型</b></td><td>追求報酬、承擔波動</td><td>非存款不保本，費用/淨值波動要揭露</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div style="font-size:12px;color:var(--text-muted);margin-top:8px;">
+              小提醒：這些說明文字很加分，評審會覺得你們懂合規/適配。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Output -->
+      <div class="output-section">
+        <div class="card">
+          <div class="card-header">
+            <h2>📊 分析結果與推薦方案</h2>
+            <p>基於相似客群投保輪廓的智能推薦</p>
+          </div>
+
+          <div class="card-body">
+            <!-- Loader (AI 模擬分析進度) -->
+            <div class="loader" id="loader">
+              <div class="loader-top">
+                <div>🤖 AI 分析中：正在匹配相似客群、彙整保額、生成報告架構…</div>
+                <div id="loaderPct">0%</div>
+              </div>
+              <div class="loader-bar"><div id="loaderFill"></div></div>
+            </div>
+
+            <!-- Summary -->
+            <div class="section-title">客戶摘要</div>
+            <div class="summary-card" id="summary"><div class="empty-state">尚未生成</div></div>
+
+            <!-- Tabs -->
+            <div class="tabs" style="margin-top:6px;">
+              <button class="tab active" data-tab="t-sim">👥 相似輪廓</button>
+              <button class="tab" data-tab="t-reco">🎯 建議方案</button>
+              <button class="tab" data-tab="t-report">📝 理專報告</button>
+            </div>
+
+            <div id="t-sim" class="tab-panel active">
+              <div class="section-title">相似族群投保輪廓（Top 3）</div>
+              <div id="similar"><div class="empty-state">尚未生成</div></div>
+            </div>
+
+            <div id="t-reco" class="tab-panel">
+              <div class="section-title">法巴建議方案（示意）</div>
+              <div id="reco"><div class="empty-state">尚未生成</div></div>
+            </div>
+
+            <div id="t-report" class="tab-panel">
+              <div class="section-title">理專報告（AI 文字 Demo）</div>
+
+              <!-- TL;DR -->
+              <div class="tldr" id="tldr" style="display:none;">
+                <strong>TL;DR（重點摘要）</strong><br/>
+                <div id="tldrText" style="margin-top:6px;"></div>
+              </div>
+
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+                <div style="font-size:12px;color:var(--text-muted);font-weight:800;">
+                  可收合：報告詳細內容（方便理專快速看重點）
+                </div>
+                <button class="btn btn-secondary" id="toggleReport" type="button" style="padding:8px 12px;font-size:12px;" disabled>
+                  ▾ 展開/收合
+                </button>
+              </div>
+
+              <div class="report-box" id="reportBox">尚未生成</div>
+
+              <p style="font-size:12px;color:var(--text-muted);margin-top:14px;line-height:1.6;">
+                <strong>提醒：</strong>此為概念 Demo。正式版需再加入：條款/等待期/除外責任檢核、核保限制、保費估算、KYC/適合度確認與資料治理。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating action bar -->
+    <div class="fab" id="fab">
+      <button class="fab-btn alt" id="fabPrint" type="button">🖨️ 列印/下載PDF</button>
+      <button class="fab-btn alt" id="fabShare" type="button">🔗 分享</button>
+      <button class="fab-btn" id="fabCopy" type="button">📋 複製報告</button>
+    </div>
+
+    <div class="toast" id="toast">已儲存</div>
   </div>
-  <div class="pill">GitHub Pages 可公開使用</div>
-</header>
 
-<main>
-  <!-- LEFT: input -->
-  <section class="panel">
-    <div class="panel-head">
-      <div>
-        <strong>客戶條件（點選即可，不用下拉）</strong>
-        <span>勾選聲明 → 填選條件 → 找相似個案 → 產生法巴建議方案 + 理專報告。</span>
-      </div>
-      <div class="badge">Input</div>
-    </div>
+  <script>
+    /** =========================
+     *  Demo 資料（你可替換）
+     *  TODO：把 CASE_DB / BNP_CATALOG 換成你們整理過的資料庫與法巴商品
+     * ========================= */
+    const CASE_DB = [
+      {
+        id:"SEG-A1", gender:"生理男", ageBand:"30-39", jobRisk:2, income:"300萬以上", family:"核心家庭",
+        needs:["保障型保單","投資型保單"],
+        coverages: [
+          {type:"醫療(實支)", amount: 1200000, unit:"NTD", note:"年度限額示意"},
+          {type:"意外", amount: 3000000, unit:"NTD", note:"身故/失能示意"},
+          {type:"重大傷病", amount: 2000000, unit:"NTD", note:"一次金示意"},
+          {type:"投資型", amount: 1000000, unit:"NTD", note:"首期投入示意"},
+        ]
+      },
+      {
+        id:"SEG-A2", gender:"生理男", ageBand:"30-39", jobRisk:2, income:"150萬到300萬", family:"核心家庭",
+        needs:["保障型保單","儲蓄型保單"],
+        coverages: [
+          {type:"醫療(實支)", amount: 1000000, unit:"NTD", note:"年度限額示意"},
+          {type:"意外", amount: 2000000, unit:"NTD", note:"身故/失能示意"},
+          {type:"壽險(定期)", amount: 5000000, unit:"NTD", note:"家庭責任期示意"},
+          {type:"儲蓄/年金", amount: 800000, unit:"NTD", note:"目標準備示意"},
+        ]
+      },
+      {
+        id:"SEG-B1", gender:"生理女", ageBand:"20-29", jobRisk:1, income:"70萬到150萬", family:"單人戶",
+        needs:["保障型保單","儲蓄型保單"],
+        coverages: [
+          {type:"醫療(實支)", amount: 800000, unit:"NTD", note:"年度限額示意"},
+          {type:"意外", amount: 1500000, unit:"NTD", note:"身故/失能示意"},
+          {type:"儲蓄/年金", amount: 500000, unit:"NTD", note:"目標準備示意"},
+        ]
+      },
+      {
+        id:"SEG-C1", gender:"生理男", ageBand:"50-59", jobRisk:3, income:"150萬到300萬", family:"夫妻家庭",
+        needs:["保障型保單"],
+        coverages: [
+          {type:"醫療(實支)", amount: 1500000, unit:"NTD", note:"高額自費示意"},
+          {type:"重大傷病", amount: 2500000, unit:"NTD", note:"一次金示意"},
+          {type:"壽險(定期)", amount: 3000000, unit:"NTD", note:"責任/負債示意"},
+        ]
+      },
+      {
+        id:"SEG-D1", gender:"生理男", ageBand:"20-29", jobRisk:5, income:"70萬以下", family:"單人戶",
+        needs:["保障型保單"],
+        coverages: [
+          {type:"意外", amount: 3000000, unit:"NTD", note:"高風險職業示意"},
+          {type:"醫療(住院日額)", amount: 2000, unit:"NTD/日", note:"住院日額示意"},
+        ]
+      },
+      {
+        id:"SEG-E1", gender:"生理女", ageBand:"60-69", jobRisk:1, income:"70萬到150萬", family:"三代家庭",
+        needs:["保障型保單","儲蓄型保單"],
+        coverages: [
+          {type:"醫療(實支)", amount: 1000000, unit:"NTD", note:"年度限額示意"},
+          {type:"長照/失能", amount: 30000, unit:"NTD/月", note:"照護扶助示意"},
+          {type:"儲蓄/年金", amount: 600000, unit:"NTD", note:"保守準備示意"},
+        ]
+      },
+    ];
 
-    <div class="content">
-      <div class="consent">
-        <input id="agree" type="checkbox" />
-        <p>
-          <strong style="color:#0f172a">聲明（Demo）</strong><br/>
-          本工具僅供提案展示：資料不會上傳伺服器；內容為輔助理解之建議，不構成投保/投資/稅務建議；實際投保以法巴保單條款、核保與銀行通路規範為準。
-        </p>
-      </div>
+    const BNP_CATALOG = [
+      { type:"醫療(實支)", product:"法國巴黎人壽｜醫療實支型方案（示意）", channel:"銀行通路", note:"住院/手術/自費項目相關設計，依條款為準" },
+      { type:"醫療(住院日額)", product:"法國巴黎人壽｜住院日額型方案（示意）", channel:"銀行通路", note:"日額給付，注意等待期/除外責任" },
+      { type:"意外", product:"法國巴黎人壽｜意外身故/失能＋意外醫療（示意）", channel:"銀行通路", note:"職業等級可能影響保費與承保" },
+      { type:"重大傷病", product:"法國巴黎人壽｜重大傷病一次金（示意）", channel:"銀行通路", note:"一次金便於支應重大支出" },
+      { type:"壽險(定期)", product:"法國巴黎人壽｜定期壽險（示意）", channel:"銀行通路", note:"家庭責任期常用，保費效率較佳" },
+      { type:"長照/失能", product:"法國巴黎人壽｜長照/失能扶助（示意）", channel:"銀行通路", note:"照護風險，注意給付認定與等待期" },
+      { type:"儲蓄/年金", product:"法國巴黎人壽｜儲蓄/年金型商品（示意）", channel:"銀行通路", note:"偏穩健資金準備，注意解約費用/期間" },
+      { type:"還本型", product:"法國巴黎人壽｜還本型商品（示意）", channel:"銀行通路", note:"返還條件/期間限制要對客說清楚" },
+      { type:"投資型", product:"法國巴黎人壽｜投資型保單（示意）", channel:"銀行通路", note:"非存款、不保本；淨值波動與費用會影響帳戶價值" },
+    ];
 
-      <div class="grid">
-        <!-- 性別 -->
-        <div class="card">
-          <div class="cap">性別</div>
-          <div class="opt-grid cols-2" role="group" aria-label="性別">
-            <button class="opt" data-field="gender" data-value="生理男" aria-pressed="false">生理男</button>
-            <button class="opt" data-field="gender" data-value="生理女" aria-pressed="false">生理女</button>
-          </div>
-        </div>
+    /** =========================
+     *  State + Draft (localStorage)
+     * ========================= */
+    const DRAFT_KEY = "policy_reco_demo_draft_v1";
 
-        <!-- 年齡段 -->
-        <div class="card">
-          <div class="cap">年齡段（10歲一區間）</div>
-          <div class="opt-grid cols-4" role="group" aria-label="年齡段">
-            <button class="opt" data-field="ageBand" data-value="0-9" aria-pressed="false">0–9</button>
-            <button class="opt" data-field="ageBand" data-value="10-19" aria-pressed="false">10–19</button>
-            <button class="opt" data-field="ageBand" data-value="20-29" aria-pressed="false">20–29</button>
-            <button class="opt" data-field="ageBand" data-value="30-39" aria-pressed="false">30–39</button>
-            <button class="opt" data-field="ageBand" data-value="40-49" aria-pressed="false">40–49</button>
-            <button class="opt" data-field="ageBand" data-value="50-59" aria-pressed="false">50–59</button>
-            <button class="opt" data-field="ageBand" data-value="60-69" aria-pressed="false">60–69</button>
-            <button class="opt" data-field="ageBand" data-value="70+" aria-pressed="false">70+</button>
-          </div>
-          <div class="help">（你也可以之後加「實際年齡」欄位，但提案展示用區間最直覺。）</div>
-        </div>
+    const state = {
+      agree:false,
+      gender:"",
+      ageBand:"",
+      jobTitle:"",
+      jobRisk:null,
+      income:"",
+      family:"",
+      needs:[]
+    };
 
-        <!-- 職業 + 自動判斷 -->
-        <div class="card">
-          <div class="cap">職業（可輸入，自動對照等級）</div>
-          <input id="jobTitle" type="text" placeholder="例如：工程師／業務／護理師／工地師傅／貨車司機…" />
-          <div class="help" id="jobHint">
-            系統判斷：<strong>尚未判斷</strong>（你仍可手動點選等級）
-          </div>
-        </div>
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
-        <!-- 職業危險等級（仍可手動） -->
-        <div class="card">
-          <div class="cap">職業危險等級</div>
-          <div class="opt-grid cols-3" role="group" aria-label="職業危險等級">
-            <button class="opt" data-field="jobRisk" data-value="1" aria-pressed="false">等級一</button>
-            <button class="opt" data-field="jobRisk" data-value="2" aria-pressed="false">等級二</button>
-            <button class="opt" data-field="jobRisk" data-value="3" aria-pressed="false">等級三</button>
-            <button class="opt" data-field="jobRisk" data-value="4" aria-pressed="false">等級四</button>
-            <button class="opt" data-field="jobRisk" data-value="5" aria-pressed="false">等級五</button>
-            <button class="opt" data-field="jobRisk" data-value="6" aria-pressed="false">等級六</button>
-          </div>
-          <div class="help">輸入職業後會自動幫你「預選」等級（仍可手動調整）。</div>
-        </div>
+    function toast(msg){
+      const t = $("#toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(()=>t.classList.remove("show"), 1600);
+    }
 
-        <!-- 年收入 -->
-        <div class="card">
-          <div class="cap">年收入</div>
-          <div class="opt-grid cols-2" role="group" aria-label="年收入">
-            <button class="opt" data-field="income" data-value="70萬以下" aria-pressed="false">70萬以下</button>
-            <button class="opt" data-field="income" data-value="70萬到150萬" aria-pressed="false">70萬到150萬</button>
-            <button class="opt" data-field="income" data-value="150萬到300萬" aria-pressed="false">150萬到300萬</button>
-            <button class="opt" data-field="income" data-value="300萬以上" aria-pressed="false">300萬以上</button>
-          </div>
-        </div>
+    function saveDraft(){
+      const payload = {
+        ...state,
+        __ts: Date.now()
+      };
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
+      $("#draftState").textContent = "草稿：已自動儲存";
+    }
 
-        <!-- 家庭結構 -->
-        <div class="card">
-          <div class="cap">家庭結構</div>
-          <div class="opt-grid cols-2" role="group" aria-label="家庭結構">
-            <button class="opt" data-field="family" data-value="單人戶" aria-pressed="false">單人戶</button>
-            <button class="opt" data-field="family" data-value="夫妻家庭" aria-pressed="false">夫妻家庭</button>
-            <button class="opt" data-field="family" data-value="單親家庭" aria-pressed="false">單親家庭</button>
-            <button class="opt" data-field="family" data-value="核心家庭" aria-pressed="false">核心家庭</button>
-            <button class="opt" data-field="family" data-value="祖孫家庭" aria-pressed="false">祖孫家庭</button>
-            <button class="opt" data-field="family" data-value="三代家庭" aria-pressed="false">三代家庭</button>
-          </div>
-        </div>
+    function loadDraft(){
+      try{
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if(!raw) return;
+        const data = JSON.parse(raw);
+        // apply
+        state.agree = !!data.agree;
+        state.gender = data.gender || "";
+        state.ageBand = data.ageBand || "";
+        state.jobTitle = data.jobTitle || "";
+        state.jobRisk = data.jobRisk ?? null;
+        state.income = data.income || "";
+        state.family = data.family || "";
+        state.needs = Array.isArray(data.needs) ? data.needs : [];
+        $("#draftState").textContent = "草稿：已載入";
+        toast("✅ 已載入上次草稿");
+      }catch{}
+    }
 
-        <!-- 投保需求 -->
-        <div class="card">
-          <div class="cap">投保需求為何？（可複選）</div>
-          <div class="need-grid" id="needs">
-            <label class="need">
-              <input type="checkbox" value="保障型保單" />
-              <div><strong>保障型</strong><small>醫療/意外/重大傷病/壽險缺口補強</small></div>
-            </label>
-            <label class="need">
-              <input type="checkbox" value="儲蓄型保單" />
-              <div><strong>儲蓄型</strong><small>穩健資金準備、偏保守</small></div>
-            </label>
-            <label class="need">
-              <input type="checkbox" value="還本型保單" />
-              <div><strong>還本型</strong><small>偏返還設計（注意條款限制）</small></div>
-            </label>
-            <label class="need">
-              <input type="checkbox" value="投資型保單" />
-              <div><strong>投資型</strong><small>追求報酬、承擔波動（非保本）</small></div>
-            </label>
-          </div>
-        </div>
-      </div>
+    /** =========================
+     *  Validation + Progress
+     * ========================= */
+    function validate(){
+      return state.agree && state.gender && state.ageBand && state.jobRisk && state.income && state.family;
+    }
 
-      <div class="actions">
-        <button class="primary" id="run" disabled>找相似個案 → 產生法巴建議</button>
-        <button class="ghost" id="genReport" disabled>生成理專報告（AI 文字）</button>
-        <button class="ghost" id="copyReport" disabled>複製理專報告</button>
-        <button class="ghost" id="reset">清除重填</button>
-      </div>
+    function calcProgress(){
+      // 必填 6項：agree + gender + ageBand + jobRisk + income + family
+      const items = [
+        state.agree ? 1 : 0,
+        state.gender ? 1 : 0,
+        state.ageBand ? 1 : 0,
+        state.jobRisk ? 1 : 0,
+        state.income ? 1 : 0,
+        state.family ? 1 : 0
+      ];
+      const pct = Math.round((items.reduce((a,b)=>a+b,0) / items.length) * 100);
+      return pct;
+    }
 
-      <div class="help warn" id="hint"></div>
-    </div>
-  </section>
-
-  <!-- RIGHT: output -->
-  <aside class="panel">
-    <div class="panel-head">
-      <div>
-        <strong>輸出：方案摘要 + 理專可讀報告</strong>
-        <span>相似個案只顯示「投保種類＋保額」，不顯示任何個案個資。</span>
-      </div>
-      <div class="badge">Output</div>
-    </div>
-
-    <div class="side">
-      <div class="row">
-        <div class="k">客戶摘要</div>
-        <div class="v" id="summary">尚未生成</div>
-      </div>
-
-      <div class="row">
-        <div class="k">相似族群投保輪廓（Top 3）</div>
-        <div class="cards" id="similar"></div>
-      </div>
-
-      <div class="row">
-        <div class="k">法巴建議方案（示意）</div>
-        <div class="cards" id="reco"></div>
-      </div>
-
-      <div class="row">
-        <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;">
-          <div>
-            <div class="k">理專報告（AI 文字 Demo）</div>
-            <div class="small">用途：讓理專拿到這份報告時能快速理解客戶需求與建議重點。</div>
-          </div>
-        </div>
-        <div class="ai-box" id="reportBox">尚未生成</div>
-      </div>
-
-      <div class="small">
-        <strong>提醒：</strong>此為提案 Demo。正式版需再加入：條款/等待期/除外責任檢核、核保限制、保費估算、KYC/適合度確認與資料治理。
-      </div>
-    </div>
-  </aside>
-</main>
-
-<script>
-/** =========================================================
- *  0) 你們之後最常改的兩塊
- *     - CASE_DB：相似個案庫（去識別化後的投保輪廓）
- *     - BNP_CATALOG：法巴商品目錄（可替換成市場現有商品名/型別）
- * ========================================================= */
-
-/** 相似個案庫（示範資料：只存特徵 + 投保種類/保額，不存任何個資） */
-const CASE_DB = [
-  {
-    id:"SEG-A1", gender:"生理男", ageBand:"30-39", jobRisk:2, income:"300萬以上", family:"核心家庭",
-    needs:["保障型保單","投資型保單"],
-    coverages: [
-      {type:"醫療(實支)", amount: 1200000, unit:"NTD", note:"年度限額示意"},
-      {type:"意外", amount: 3000000, unit:"NTD", note:"身故/失能示意"},
-      {type:"重大傷病", amount: 2000000, unit:"NTD", note:"一次金示意"},
-      {type:"投資型", amount: 1000000, unit:"NTD", note:"首期投入示意"},
-    ]
-  },
-  {
-    id:"SEG-A2", gender:"生理男", ageBand:"30-39", jobRisk:2, income:"150萬到300萬", family:"核心家庭",
-    needs:["保障型保單","儲蓄型保單"],
-    coverages: [
-      {type:"醫療(實支)", amount: 1000000, unit:"NTD", note:"年度限額示意"},
-      {type:"意外", amount: 2000000, unit:"NTD", note:"身故/失能示意"},
-      {type:"壽險(定期)", amount: 5000000, unit:"NTD", note:"家庭責任期示意"},
-      {type:"儲蓄/年金", amount: 800000, unit:"NTD", note:"目標準備示意"},
-    ]
-  },
-  {
-    id:"SEG-B1", gender:"生理女", ageBand:"20-29", jobRisk:1, income:"70萬到150萬", family:"單人戶",
-    needs:["保障型保單","儲蓄型保單"],
-    coverages: [
-      {type:"醫療(實支)", amount: 800000, unit:"NTD", note:"年度限額示意"},
-      {type:"意外", amount: 1500000, unit:"NTD", note:"身故/失能示意"},
-      {type:"儲蓄/年金", amount: 500000, unit:"NTD", note:"目標準備示意"},
-    ]
-  },
-  {
-    id:"SEG-C1", gender:"生理男", ageBand:"50-59", jobRisk:3, income:"150萬到300萬", family:"夫妻家庭",
-    needs:["保障型保單"],
-    coverages: [
-      {type:"醫療(實支)", amount: 1500000, unit:"NTD", note:"高額自費示意"},
-      {type:"重大傷病", amount: 2500000, unit:"NTD", note:"一次金示意"},
-      {type:"壽險(定期)", amount: 3000000, unit:"NTD", note:"責任/負債示意"},
-    ]
-  },
-  {
-    id:"SEG-D1", gender:"生理男", ageBand:"20-29", jobRisk:5, income:"70萬以下", family:"單人戶",
-    needs:["保障型保單"],
-    coverages: [
-      {type:"意外", amount: 3000000, unit:"NTD", note:"高風險職業示意"},
-      {type:"醫療(住院日額)", amount: 2000, unit:"NTD/日", note:"住院日額示意"},
-    ]
-  },
-  {
-    id:"SEG-E1", gender:"生理女", ageBand:"60-69", jobRisk:1, income:"70萬到150萬", family:"三代家庭",
-    needs:["保障型保單","儲蓄型保單"],
-    coverages: [
-      {type:"醫療(實支)", amount: 1000000, unit:"NTD", note:"年度限額示意"},
-      {type:"長照/失能", amount: 30000, unit:"NTD/月", note:"照護扶助示意"},
-      {type:"儲蓄/年金", amount: 600000, unit:"NTD", note:"保守準備示意"},
-    ]
-  },
-];
-
-/** 法巴商品目錄（示意：你們可替換成法巴現有商品名/類別） */
-const BNP_CATALOG = [
-  { type:"醫療(實支)", product:"法國巴黎人壽｜醫療實支型方案（示意）", channel:"銀行通路", note:"住院/手術/自費項目相關設計，依條款為準" },
-  { type:"醫療(住院日額)", product:"法國巴黎人壽｜住院日額型方案（示意）", channel:"銀行通路", note:"日額給付，注意等待期/除外責任" },
-  { type:"意外", product:"法國巴黎人壽｜意外身故/失能＋意外醫療（示意）", channel:"銀行通路", note:"職業等級可能影響保費與承保" },
-  { type:"重大傷病", product:"法國巴黎人壽｜重大傷病一次金（示意）", channel:"銀行通路", note:"一次金便於支應重大支出" },
-  { type:"壽險(定期)", product:"法國巴黎人壽｜定期壽險（示意）", channel:"銀行通路", note:"家庭責任期常用，保費效率較佳" },
-  { type:"長照/失能", product:"法國巴黎人壽｜長照/失能扶助（示意）", channel:"銀行通路", note:"照護風險，注意給付認定與等待期" },
-  { type:"儲蓄/年金", product:"法國巴黎人壽｜儲蓄/年金型商品（示意）", channel:"銀行通路", note:"偏穩健資金準備，注意解約費用/期間" },
-  { type:"還本型", product:"法國巴黎人壽｜還本型商品（示意）", channel:"銀行通路", note:"返還條件/期間限制要對客說清楚" },
-  { type:"投資型", product:"法國巴黎人壽｜投資型保單（示意）", channel:"銀行通路", note:"非存款、不保本；淨值波動與費用會影響帳戶價值" },
-];
-
-/** =========================================================
- *  1) 狀態
- * ========================================================= */
-const state = {
-  agree:false,
-  gender:"",
-  ageBand:"",
-  jobTitle:"",
-  jobRisk:null,
-  income:"",
-  family:"",
-  needs:[]
-};
-
-const $ = (s)=>document.querySelector(s);
-const $$ = (s)=>Array.from(document.querySelectorAll(s));
-
-function validate(){
-  const ok =
-    state.agree &&
-    state.gender &&
-    state.ageBand &&
-    state.jobRisk &&
-    state.income &&
-    state.family;
-  return ok;
-}
-
-function sync(){
-  const ok = validate();
-  $("#run").disabled = !ok;
-  $("#genReport").disabled = !ok || !window.__last;
-  $("#copyReport").disabled = !window.__last || ($("#reportBox").textContent || "").includes("尚未生成");
-
-  $("#hint").textContent = ok ? "" : "請先勾選聲明，並完成：性別／年齡段／職業等級／年收入／家庭結構。";
-}
-
-/** =========================================================
- *  2) 選項按鈕處理（取代 dropdown）
- * ========================================================= */
-function setPressed(field, value){
-  $$(`.opt[data-field="${field}"]`).forEach(btn=>{
-    const on = btn.dataset.value === value;
-    btn.setAttribute("aria-pressed", on ? "true":"false");
-  });
-  if(field==="jobRisk") state.jobRisk = Number(value);
-  else state[field] = value;
-  sync();
-}
-
-function readNeeds(){
-  const checks = $$("#needs input[type='checkbox']");
-  state.needs = checks.filter(c=>c.checked).map(c=>c.value);
-  checks.forEach(c=>c.closest(".need").classList.toggle("on", c.checked));
-  sync();
-}
-
-/** =========================================================
- *  3) 職業輸入 → 自動判斷職業危險等級（可手動覆寫）
- *     (規則式：demo 用；你們可改成更完整職業對照表)
- * ========================================================= */
-function inferJobRisk(jobTitle){
-  const t = (jobTitle || "").toLowerCase();
-
-  // high risk keywords
-  const high = ["工地","建築","鷹架","鋼構","焊接","礦","油","化工","消防","警察","保全","海巡","軍",
-                "貨車","卡車","司機","外送","機車","重機","高空","電塔","船員","漁","吊車","起重",
-                "工人","施工","搬運","倉儲","機械維修","救護"];
-  // medium risk
-  const mid = ["餐飲","廚師","服務生","護理","照服","物流","業務","銷售","教師體育","教練","美容","美髮","按摩","技術員"];
-  // low risk
-  const low = ["工程師","會計","行政","文書","人資","法務","金融","銀行","研究","設計","行銷","客服","學生","老師","教授"];
-
-  const hit = (arr)=>arr.some(k=>t.includes(k));
-
-  if(hit(high)) return {level:5, reason:"職業關鍵字顯示高活動/高風險工作型態"};
-  if(hit(mid))  return {level:3, reason:"職業型態可能具一定活動與風險暴露"};
-  if(hit(low))  return {level:1, reason:"多為室內/相對低風險工作型態"};
-
-  // default
-  return {level:2, reason:"資訊不足，先以一般等級估計（建議理專再確認工作內容）"};
-}
-
-function autoSelectJobRisk(level){
-  // set UI pressed
-  $$(`.opt[data-field="jobRisk"]`).forEach(btn=>{
-    const on = Number(btn.dataset.value) === Number(level);
-    btn.setAttribute("aria-pressed", on ? "true":"false");
-  });
-  state.jobRisk = Number(level);
-}
-
-/** =========================================================
- *  4) 相似度計算（不顯示個案資料，只用於內部比對）
- * ========================================================= */
-function overlapScore(a, b){
-  if(!a.length || !b.length) return 0;
-  const A = new Set(a), B = new Set(b);
-  let inter=0;
-  for(const x of A) if(B.has(x)) inter++;
-  const union = new Set([...A, ...B]).size;
-  return inter / union;
-}
-
-function similarity(user, c){
-  let score = 0;
-  // weights tuned for demo
-  score += (user.gender === c.gender) ? 1.2 : 0;
-  score += (user.ageBand === c.ageBand) ? 1.3 : 0;
-  score += (user.income === c.income) ? 1.2 : 0;
-  score += (user.family === c.family) ? 1.0 : 0;
-  score += Math.max(0, 1.2 - 0.35*Math.abs(user.jobRisk - c.jobRisk));
-  score += 1.6 * overlapScore(user.needs, c.needs);
-  return score;
-}
-
-function topSimilarCases(user, k=3){
-  const scored = CASE_DB.map(c => ({...c, sim: similarity(user, c)}));
-  scored.sort((a,b)=>b.sim-a.sim);
-  return scored.slice(0,k);
-}
-
-/** =========================================================
- *  5) 彙整：從相似個案推導「類別」與「常見保額」
- * ========================================================= */
-function median(nums){
-  if(!nums.length) return null;
-  const a = [...nums].sort((x,y)=>x-y);
-  const m = Math.floor(a.length/2);
-  return a.length%2 ? a[m] : (a[m-1]+a[m])/2;
-}
-
-function aggregateCoverage(simCases){
-  // group by type + unit
-  const map = new Map(); // key -> {type, unit, amounts[], count, weight}
-  for(const c of simCases){
-    for(const cv of c.coverages){
-      const key = `${cv.type}::${cv.unit}`;
-      if(!map.has(key)){
-        map.set(key, {type: cv.type, unit: cv.unit, amounts:[cv.amount], count:1, weight:c.sim});
-      }else{
-        const o = map.get(key);
-        o.amounts.push(cv.amount);
-        o.count += 1;
-        o.weight += c.sim;
+    function updateProgressSteps(){
+      const ok = validate();
+      $("#step1").classList.toggle("completed", ok);
+      $("#step2").classList.toggle("active", ok);
+      if(window.__last){
+        $("#step2").classList.add("completed");
+        $("#step3").classList.add("active", "completed");
+        const hasReport = !$("#reportBox").textContent.includes("尚未生成") && !$("#reportBox").textContent.includes("✅ 已生成");
+        if(hasReport){
+          $("#step4").classList.add("active", "completed");
+        }
       }
     }
-  }
-  const arr = Array.from(map.values())
-    .map(o => ({...o, typical: median(o.amounts)}))
-    .sort((a,b)=>b.weight-a.weight);
 
-  return arr;
-}
-
-function pickBnpProduct(type){
-  // exact match first
-  const p = BNP_CATALOG.find(x=>x.type===type);
-  if(p) return p;
-
-  // fallback: fuzzy by prefix
-  const p2 = BNP_CATALOG.find(x=>type.startsWith(x.type.split("(")[0]));
-  return p2 || {type, product:"法國巴黎人壽｜（待補商品名）", channel:"銀行通路", note:"請替換成法巴實際商品" };
-}
-
-/** =========================================================
- *  6) 依客戶條件加強「應該納入的類別」
- *     - 若相似個案沒出現也可補（例如：家庭責任期 → 壽險）
- * ========================================================= */
-function personaTypeBoost(user){
-  const wanted = new Set();
-
-  // 基本：保障型 → 醫療/意外/重大傷病
-  if(user.needs.includes("保障型保單") || user.needs.length===0){
-    wanted.add("醫療(實支)");
-    wanted.add("意外");
-    wanted.add("重大傷病");
-  }
-
-  // 家庭責任：核心/夫妻/單親/三代 → 壽險
-  if(["核心家庭","夫妻家庭","單親家庭","三代家庭","祖孫家庭"].includes(user.family)){
-    wanted.add("壽險(定期)");
-  }
-
-  // 高職業風險 → 意外強化
-  if(user.jobRisk>=4){
-    wanted.add("意外");
-  }
-
-  // 高齡 → 長照/失能 + 醫療補強
-  if(user.ageBand.startsWith("60") || user.ageBand==="70+"){
-    wanted.add("長照/失能");
-    wanted.add("醫療(實支)");
-  }
-
-  // 儲蓄/還本/投資
-  if(user.needs.includes("儲蓄型保單")) wanted.add("儲蓄/年金");
-  if(user.needs.includes("還本型保單")) wanted.add("還本型");
-  if(user.needs.includes("投資型保單")) wanted.add("投資型");
-
-  return wanted;
-}
-
-/** =========================================================
- *  7) Render
- * ========================================================= */
-function fmtAmount(a, unit){
-  if(a==null) return "—";
-  if(unit==="NTD"){
-    // show in 萬 if big
-    if(a>=1000000) return `${Math.round(a/10000)} 萬`;
-    return `${a.toLocaleString()} 元`;
-  }
-  return `${a.toLocaleString()} ${unit}`;
-}
-
-function renderSummary(){
-  const jobTxt = state.jobTitle ? `｜職業：${state.jobTitle}` : "";
-  $("#summary").textContent =
-    `${state.gender}｜${state.ageBand}｜職業等級 ${state.jobRisk}｜${state.income}｜${state.family}${jobTxt}｜需求：${state.needs.length?state.needs.join("、"):"未選"}`;
-}
-
-function renderSimilar(simCases){
-  const el = $("#similar");
-  if(!simCases.length){
-    el.innerHTML = `<div class="small">尚未生成</div>`;
-    return;
-  }
-
-  // Only show coverages (no case demographics)
-  el.innerHTML = simCases.map((c, idx)=>`
-    <div class="reco-card">
-      <h3>相似輪廓 #${idx+1} <span style="color:#0b6b57">（相似度 ${c.sim.toFixed(2)}）</span></h3>
-      <div class="meta">
-        ${c.coverages.map(cv=>`• ${cv.type}：${fmtAmount(cv.amount, cv.unit)}（${cv.note||"示意"}）`).join("<br/>")}
-      </div>
-      <div class="tags">
-        ${c.coverages.map(cv=>`<span class="tag">${cv.type}</span>`).slice(0,6).join("")}
-      </div>
-    </div>
-  `).join("");
-}
-
-function renderRecoCards(recoItems){
-  const el = $("#reco");
-  if(!recoItems.length){
-    el.innerHTML = `<div class="small">尚未生成</div>`;
-    return;
-  }
-
-  el.innerHTML = recoItems.map(r=>{
-    const p = pickBnpProduct(r.type);
-    return `
-      <div class="reco-card">
-        <h3>${r.type}｜${p.product}</h3>
-        <div class="meta">
-          建議保額（參考相似族群）：<strong>${fmtAmount(r.typical, r.unit)}</strong><br/>
-          參考次數：${r.count}｜通路：${p.channel}<br/>
-          說明：${p.note}
-        </div>
-        <div class="tags">
-          <span class="tag">法巴</span>
-          <span class="tag">銀行通路</span>
-          <span class="tag">相似個案推導</span>
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-
-/** =========================================================
- *  8) 生成「理專報告」（AI 文字 Demo：更像交付文件）
- * ========================================================= */
-function reportPersonaInsights(user){
-  const bullets = [];
-  if(user.ageBand==="30-39" || user.ageBand==="40-49") bullets.push("處於家庭責任與資產累積階段，建議先以保障缺口盤點為主，再評估進階型商品。");
-  if(user.ageBand==="50-59") bullets.push("進入健康風險上升期，重大傷病與醫療自費支出風險須更被看見。");
-  if(user.ageBand.startsWith("60") || user.ageBand==="70+") bullets.push("高齡階段應優先檢視醫療與照護/失能風險，並確認可承保與等待期條件。");
-  if(user.jobRisk>=4) bullets.push("職業風險偏高：意外/失能保障建議提高並確認職業等級承保規則。");
-  if(["核心家庭","三代家庭","祖孫家庭","單親家庭"].includes(user.family)) bullets.push("家庭結構顯示扶養/照護責任：壽險一次金或定期壽險可作為支出風險緩衝。");
-  if(user.needs.includes("投資型保單")) bullets.push("有投資型需求：需先確認風險承受度與波動理解（非存款、不保本），並搭配保障型避免本末倒置。");
-  if(user.needs.includes("還本型保單")) bullets.push("偏好還本型：務必向客戶清楚說明返還條件、期間、解約費用與保障本質。");
-  if(user.needs.includes("儲蓄型保單")) bullets.push("偏好儲蓄/年金：可作資金準備，但仍需先確保基本保障不缺口。");
-
-  if(!bullets.length) bullets.push("建議理專先用基本問診式提問釐清：客戶優先目標（保障缺口 / 資金準備 / 報酬）與可負擔保費。");
-  return bullets;
-}
-
-function typeDistribution(simCases){
-  const m = new Map(); // type -> count
-  for(const c of simCases){
-    for(const cv of c.coverages){
-      m.set(cv.type, (m.get(cv.type)||0) + 1);
+    function updateProgressCard(){
+      const pct = calcProgress();
+      $("#progressPct").textContent = `${pct}%`;
+      $("#progressFill").style.width = `${pct}%`;
+      $("#previewTag").textContent = validate() ? "可分析" : "未完成";
     }
-  }
-  const arr = Array.from(m.entries()).sort((a,b)=>b[1]-a[1]);
-  return arr;
-}
 
-function generateAdvisorReport(user, simCases, recoAgg){
-  const needsLine = user.needs.length ? user.needs.join("、") : "未選（建議至少確認保障型需求）";
-  const jobLine = user.jobTitle ? `職業：${user.jobTitle}（系統估等級 ${user.jobRisk}，建議理專再確認工作內容）` : `職業等級：${user.jobRisk}`;
-  const dist = typeDistribution(simCases).map(([t,c])=>`- ${t}：出現於 ${c}/3 個相似輪廓`).join("\n");
+    function updateLivePreview(){
+      const pv = $("#livePreview");
+      const fmt = (v)=> v ? `<b>${v}</b>` : "—";
+      const needs = state.needs.length ? state.needs.join("、") : "—";
+      pv.innerHTML = `
+        <div>性別</div><div>${fmt(state.gender)}</div>
+        <div>年齡段</div><div>${fmt(state.ageBand)}</div>
+        <div>職業</div><div>${fmt(state.jobTitle || "未填")}</div>
+        <div>等級</div><div>${fmt(state.jobRisk ? ("等級 " + state.jobRisk) : "")}</div>
+        <div>年收入</div><div>${fmt(state.income)}</div>
+        <div>家庭</div><div>${fmt(state.family)}</div>
+        <div>需求</div><div>${fmt(needs)}</div>
+      `;
+    }
 
-  const topRecs = recoAgg.slice(0,6).map(r=>{
-    const p = pickBnpProduct(r.type);
-    return `- ${r.type}：${fmtAmount(r.typical, r.unit)}（${p.product}｜${p.channel}）`;
-  }).join("\n");
+    /** =========================
+     *  Field filled UI
+     * ========================= */
+    function updateFilledUI(){
+      $$(".field").forEach(field => {
+        const name = field.dataset.field;
+        if(!name) return;
+        if(name === "needs"){
+          field.classList.toggle("filled", state.needs.length > 0);
+          return;
+        }
+        field.classList.toggle("filled", !!state[name]);
+      });
+    }
 
-  const insights = reportPersonaInsights(user).map(x=>`- ${x}`).join("\n");
+    /** =========================
+     *  Buttons state + Hint
+     * ========================= */
+    function sync(){
+      const ok = validate();
+      $("#run").disabled = !ok || !!window.__analyzing;
+      $("#genReport").disabled = !ok || !window.__last || !!window.__analyzing;
+      $("#copyReport").disabled = !window.__last || $("#reportBox").textContent.includes("尚未生成");
+      $("#toggleReport").disabled = $("#reportBox").textContent.includes("尚未生成");
+      $("#fabCopy").disabled = $("#reportBox").textContent.includes("尚未生成");
 
-  const questions = [
-    "目前是否已有既有保單？各類保額/附約/等待期/除外責任為何？",
-    "家中主要經濟支柱是誰？若發生重大事故，家庭月支出能支撐多久？",
-    "醫療自費項目（手術、住院、門急診）是否有備用金？",
-    "對『一次金』的偏好（重大傷病/癌症）是否能接受？",
-    "若涉及投資型：可接受帳戶價值波動幅度？最在意報酬還是穩定？"
-  ].map(q=>`- ${q}`).join("\n");
+      const hint = $("#hint");
+      if(ok){
+        hint.style.display = "none";
+      } else {
+        hint.style.display = "block";
+        hint.textContent = "⚠️ 請先勾選聲明，並完成：性別、年齡段、職業等級、年收入、家庭結構。";
+      }
 
-  const disclaimer =
+      updateFilledUI();
+      updateProgressCard();
+      updateLivePreview();
+      updateScenarioTip();
+      updateProgressSteps();
+
+      // autosave draft
+      saveDraft();
+    }
+
+    /** =========================
+     *  Option selection
+     * ========================= */
+    function setPressed(field, value){
+      $$(`.option-btn[data-field="${field}"]`).forEach(btn=>{
+        const on = btn.dataset.value === value;
+        btn.setAttribute("aria-pressed", on ? "true":"false");
+      });
+      if(field==="jobRisk") state.jobRisk = Number(value);
+      else state[field] = value;
+      sync();
+    }
+
+    function readNeeds(){
+      const checks = $$("#needs input[type='checkbox']");
+      state.needs = checks.filter(c=>c.checked).map(c=>c.value);
+      checks.forEach(c=>c.closest(".checkbox-card").classList.toggle("checked", c.checked));
+      sync();
+    }
+
+    /** =========================
+     *  Job risk inference
+     * ========================= */
+    function inferJobRisk(jobTitle){
+      const t = (jobTitle || "").toLowerCase();
+      const high = ["工地","建築","鷹架","鋼構","焊接","礦","油","化工","消防","警察","保全","海巡","軍",
+                    "貨車","卡車","司機","外送","機車","重機","高空","電塔","船員","漁","起重",
+                    "工人","施工","搬運","倉儲","機械維修","救護"];
+      const mid = ["餐飲","廚師","服務生","護理","照服","物流","業務","銷售","教練","美容","美髮","按摩","技術員"];
+      const low = ["工程師","會計","行政","文書","人資","法務","金融","銀行","研究","設計","行銷","客服","學生","老師","教授"];
+      const hit = (arr)=>arr.some(k=>t.includes(k));
+      if(hit(high)) return {level:5, reason:"職業關鍵字顯示高活動/高風險工作型態"};
+      if(hit(mid))  return {level:3, reason:"職業型態可能具一定活動與風險暴露"};
+      if(hit(low))  return {level:1, reason:"多為室內/相對低風險工作型態"};
+      return {level:2, reason:"資訊不足，先以一般等級估計（建議理專再確認工作內容）"};
+    }
+
+    function autoSelectJobRisk(level){
+      $$(`.option-btn[data-field="jobRisk"]`).forEach(btn=>{
+        const on = Number(btn.dataset.value) === Number(level);
+        btn.setAttribute("aria-pressed", on ? "true":"false");
+      });
+      state.jobRisk = Number(level);
+    }
+
+    /** =========================
+     *  Similarity & aggregation
+     * ========================= */
+    function overlapScore(a, b){
+      if(!a.length || !b.length) return 0;
+      const A = new Set(a), B = new Set(b);
+      let inter=0;
+      for(const x of A) if(B.has(x)) inter++;
+      const union = new Set([...A, ...B]).size;
+      return inter / union;
+    }
+
+    function similarity(user, c){
+      let score = 0;
+      score += (user.gender === c.gender) ? 1.2 : 0;
+      score += (user.ageBand === c.ageBand) ? 1.3 : 0;
+      score += (user.income === c.income || user.income==="暫不提供") ? 0.9 : 0;
+      score += (user.family === c.family) ? 1.0 : 0;
+      score += Math.max(0, 1.2 - 0.35*Math.abs((user.jobRisk||2) - c.jobRisk));
+      score += 1.6 * overlapScore(user.needs, c.needs);
+      return score;
+    }
+
+    function topSimilarCases(user, k=3){
+      const scored = CASE_DB.map(c => ({...c, sim: similarity(user, c)}));
+      scored.sort((a,b)=>b.sim-a.sim);
+      return scored.slice(0,k);
+    }
+
+    function median(nums){
+      if(!nums.length) return null;
+      const a = [...nums].sort((x,y)=>x-y);
+      const m = Math.floor(a.length/2);
+      return a.length%2 ? a[m] : (a[m-1]+a[m])/2;
+    }
+
+    function aggregateCoverage(simCases){
+      const map = new Map();
+      for(const c of simCases){
+        for(const cv of c.coverages){
+          const key = `${cv.type}::${cv.unit}`;
+          if(!map.has(key)){
+            map.set(key, {type: cv.type, unit: cv.unit, amounts:[cv.amount], count:1, weight:c.sim});
+          }else{
+            const o = map.get(key);
+            o.amounts.push(cv.amount);
+            o.count += 1;
+            o.weight += c.sim;
+          }
+        }
+      }
+      return Array.from(map.values())
+        .map(o => ({...o, typical: median(o.amounts)}))
+        .sort((a,b)=>b.weight-a.weight);
+    }
+
+    function pickBnpProduct(type){
+      const p = BNP_CATALOG.find(x=>x.type===type);
+      if(p) return p;
+      const p2 = BNP_CATALOG.find(x=>type.startsWith(x.type.split("(")[0]));
+      return p2 || {type, product:"法國巴黎人壽｜（待補商品名）", channel:"銀行通路", note:"請替換成法巴實際商品" };
+    }
+
+    function personaTypeBoost(user){
+      const wanted = new Set();
+      if(user.needs.includes("保障型保單") || user.needs.length===0){
+        wanted.add("醫療(實支)");
+        wanted.add("意外");
+        wanted.add("重大傷病");
+      }
+      if(["核心家庭","夫妻家庭","單親家庭","三代家庭","祖孫家庭"].includes(user.family)){
+        wanted.add("壽險(定期)");
+      }
+      if((user.jobRisk||0) >= 4) wanted.add("意外");
+      if((user.ageBand||"").startsWith("60") || user.ageBand==="70+"){
+        wanted.add("長照/失能");
+        wanted.add("醫療(實支)");
+      }
+      if(user.needs.includes("儲蓄型保單")) wanted.add("儲蓄/年金");
+      if(user.needs.includes("還本型保單")) wanted.add("還本型");
+      if(user.needs.includes("投資型保單")) wanted.add("投資型");
+      return wanted;
+    }
+
+    function fmtAmount(a, unit){
+      if(a==null) return "—";
+      if(unit==="NTD"){
+        if(a>=1000000) return `${Math.round(a/10000)} 萬`;
+        return `${a.toLocaleString()} 元`;
+      }
+      return `${a.toLocaleString()} ${unit}`;
+    }
+
+    /** =========================
+     *  Render
+     * ========================= */
+    function renderSummary(){
+      const jobTxt = state.jobTitle ? `｜職業：${state.jobTitle}` : "";
+      $("#summary").innerHTML = `
+        <strong>基本資料</strong><br>
+        ${state.gender}｜${state.ageBand}｜職業等級 ${state.jobRisk}｜${state.income}｜${state.family}${jobTxt}<br>
+        <strong>需求</strong>：${state.needs.length?state.needs.join("、"):"未選"}
+      `;
+    }
+
+    function renderSimilar(simCases){
+      const el = $("#similar");
+      if(!simCases.length){
+        el.innerHTML = `<div class="empty-state">尚未生成</div>`;
+        return;
+      }
+      el.innerHTML = simCases.map((c, idx)=>`
+        <div class="result-card">
+          <h3>相似輪廓 #${idx+1} <span style="color:var(--primary)">（相似度 ${c.sim.toFixed(2)}）</span></h3>
+          <div class="meta">
+            ${c.coverages.map(cv=>`• ${cv.type}：${fmtAmount(cv.amount, cv.unit)}（${cv.note||"示意"}）`).join("<br>")}
+          </div>
+          <div class="tags">
+            ${c.coverages.map(cv=>`<span class="tag">${cv.type}</span>`).slice(0,6).join("")}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderRecoCards(recoItems){
+      const el = $("#reco");
+      if(!recoItems.length){
+        el.innerHTML = `<div class="empty-state">尚未生成</div>`;
+        return;
+      }
+      el.innerHTML = recoItems.map(r=>{
+        const p = pickBnpProduct(r.type);
+        return `
+          <div class="result-card">
+            <h3>${r.type}｜${p.product}</h3>
+            <div class="meta">
+              建議保額（參考相似族群）：<strong>${fmtAmount(r.typical, r.unit)}</strong><br>
+              參考次數：${r.count}｜通路：${p.channel}<br>
+              說明：${p.note}
+            </div>
+            <div class="tags">
+              <span class="tag">法巴</span>
+              <span class="tag">銀行通路</span>
+              <span class="tag">相似個案推導</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function reportPersonaInsights(user){
+      const bullets = [];
+      if(user.ageBand==="30-39" || user.ageBand==="40-49") bullets.push("處於家庭責任與資產累積階段：建議先盤點保障缺口，再評估儲蓄/投資。");
+      if(user.ageBand==="50-59") bullets.push("健康風險上升期：重大傷病一次金與醫療自費支出風險需更被看見。");
+      if(user.ageBand.startsWith("60") || user.ageBand==="70+") bullets.push("高齡階段：優先檢視醫療與照護/失能風險，並確認等待期與可承保條件。");
+      if((user.jobRisk||0)>=4) bullets.push("職業風險偏高：意外/失能保障建議提高，並確認職業等級承保規則。");
+      if(["核心家庭","三代家庭","祖孫家庭","單親家庭"].includes(user.family)) bullets.push("家庭結構顯示扶養/照護責任：可用定期壽險建立責任期的支出風險緩衝。");
+      if(user.needs.includes("投資型保單")) bullets.push("有投資型需求：需先確認風險承受度與波動理解（非存款、不保本），並避免挪用保障預算。");
+      if(user.needs.includes("還本型保單")) bullets.push("偏好還本型：需清楚說明返還條件/期間/解約費用，避免誤解為保本理財。");
+      if(user.needs.includes("儲蓄型保單")) bullets.push("偏好儲蓄/年金：可作資金準備，但仍需先確保基本保障不缺口。");
+      if(!bullets.length) bullets.push("建議理專先釐清：客戶優先目標（保障缺口 / 資金準備 / 報酬）與可負擔保費。");
+      return bullets;
+    }
+
+    function typeDistribution(simCases){
+      const m = new Map();
+      for(const c of simCases){
+        for(const cv of c.coverages){
+          m.set(cv.type, (m.get(cv.type)||0) + 1);
+        }
+      }
+      return Array.from(m.entries()).sort((a,b)=>b[1]-a[1]);
+    }
+
+    function generateAdvisorReport(user, simCases, recoAgg){
+      const needsLine = user.needs.length ? user.needs.join("、") : "未選（建議至少確認保障型需求）";
+      const jobLine = user.jobTitle
+        ? `職業：${user.jobTitle}（系統估等級 ${user.jobRisk}，建議理專再確認工作內容）`
+        : `職業等級：${user.jobRisk}`;
+      const dist = typeDistribution(simCases).map(([t,c])=>`- ${t}：出現於 ${c}/3 個相似輪廓`).join("\n");
+
+      const topRecs = recoAgg.slice(0,6).map(r=>{
+        const p = pickBnpProduct(r.type);
+        return `- ${r.type}：${fmtAmount(r.typical, r.unit)}（${p.product}｜${p.channel}）`;
+      }).join("\n");
+
+      const insights = reportPersonaInsights(user).map(x=>`- ${x}`).join("\n");
+
+      const questions = [
+        "目前是否已有既有保單？各類保額/附約/等待期/除外責任為何？",
+        "家中主要經濟支柱是誰？若發生重大事故，家庭月支出能支撐多久？",
+        "醫療自費項目（手術、住院、門急診）是否有備用金？",
+        "對『一次金』的偏好（重大傷病/癌症）是否能接受？",
+        "若涉及投資型：可接受帳戶價值波動幅度？最在意報酬還是穩定？"
+      ].map(q=>`- ${q}`).join("\n");
+
+      const disclaimer =
 `【合規提醒（摘要）】
 - 本報告為需求分析輔助文件，非承諾給付或核保結果。
 - 實際承保、費率、給付條件、等待期、除外責任，以法巴保單條款與核保為準。
 - 投資型保單非存款、不保本；費用、匯率與淨值波動會影響帳戶價值。`;
 
-  return `《法國巴黎人壽｜理專需求分析報告（Demo）》
+      return `《法國巴黎人壽｜理專需求分析報告（Demo）》
+
 【客戶概況】
 - 基本：${user.gender}｜年齡段 ${user.ageBand}｜${user.income}｜${user.family}
 - ${jobLine}
@@ -899,124 +1628,377 @@ ${insights}
 ${questions}
 
 ${disclaimer}`;
-}
-
-/** =========================================================
- *  9) Event bindings
- * ========================================================= */
-$("#agree").addEventListener("change", e=>{
-  state.agree = e.target.checked;
-  sync();
-});
-
-$$(".opt[data-field]").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    setPressed(btn.dataset.field, btn.dataset.value);
-  });
-});
-
-$$("#needs input[type='checkbox']").forEach(c=>{
-  c.addEventListener("change", readNeeds);
-});
-
-$("#jobTitle").addEventListener("input", e=>{
-  state.jobTitle = e.target.value || "";
-  const r = inferJobRisk(state.jobTitle);
-  $("#jobHint").innerHTML = `系統判斷：<strong>等級 ${r.level}</strong>（${r.reason}）<br/><span class="help">可直接手動改等級，系統會以你手動選的為準。</span>`;
-  // auto-select only if user hasn't manually set jobRisk yet OR if input changes frequently, we still auto
-  autoSelectJobRisk(r.level);
-  sync();
-});
-
-$("#run").addEventListener("click", ()=>{
-  renderSummary();
-
-  const simCases = topSimilarCases(state, 3);
-  renderSimilar(simCases);
-
-  // aggregate from similar
-  const agg = aggregateCoverage(simCases);
-
-  // boost types by persona even if missing in agg
-  const wanted = personaTypeBoost(state);
-  for(const t of wanted){
-    const exists = agg.some(x=>x.type===t);
-    if(!exists){
-      // create a placeholder item if no similar data
-      agg.push({type:t, unit:"NTD", amounts:[], typical:null, count:0, weight:0.01});
     }
-  }
 
-  // sort again by weight then by wanted presence
-  agg.sort((a,b)=>b.weight-a.weight);
+    function buildTLDR(user, recoAgg){
+      const lines = [];
+      // 1) priority
+      const p1 = user.needs.includes("保障型保單") || user.needs.length===0
+        ? "優先順序：先補足【保障缺口】（醫療/意外/重大傷病/壽險責任期）"
+        : `優先順序：以客戶偏好【${user.needs.join("、")}】為主，但仍建議檢視基本保障`;
+      lines.push(`• ${p1}`);
 
-  // pick top for display (6)
-  const recoAgg = agg.slice(0,6);
-  renderRecoCards(recoAgg);
+      // 2) top 2 recs
+      const top2 = recoAgg.slice(0,2).map(r=>`${r.type}（${fmtAmount(r.typical, r.unit)}）`).join("、");
+      if(top2) lines.push(`• 本次最關鍵建議：${top2}`);
 
-  window.__last = { simCases, recoAgg };
+      // 3) risk note
+      if((user.jobRisk||0) >= 4) lines.push("• 風險提醒：職業等級偏高，意外/失能與承保條件需優先確認");
+      else if((user.ageBand||"").startsWith("60") || user.ageBand==="70+") lines.push("• 風險提醒：高齡族群需特別留意等待期/給付認定與可承保限制");
+      else lines.push("• 理專建議：先盤點既有保單，再用差額補齊缺口（避免重複投保或保障不對位）");
 
-  $("#genReport").disabled = false;
-  $("#copyReport").disabled = false;
+      return lines.join("<br/>");
+    }
 
-  $("#reportBox").textContent = "已生成相似輪廓與建議方案。點「生成理專報告（AI 文字）」可輸出可讀說明。";
-  sync();
-});
+    /** =========================
+     *  Tabs + Accordion
+     * ========================= */
+    function setTab(id){
+      $$(".tab").forEach(b=>b.classList.toggle("active", b.dataset.tab===id));
+      $$(".tab-panel").forEach(p=>p.classList.toggle("active", p.id===id));
+    }
 
-$("#genReport").addEventListener("click", ()=>{
-  if(!window.__last){
-    $("#reportBox").textContent = "請先按「找相似個案 → 產生法巴建議」。";
-    return;
-  }
-  const {simCases, recoAgg} = window.__last;
-  $("#reportBox").textContent = generateAdvisorReport(state, simCases, recoAgg);
-  sync();
-});
+    function bindAccordions(){
+      $$(".acc-item .acc-btn").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          btn.parentElement.classList.toggle("open");
+        });
+      });
+    }
 
-$("#copyReport").addEventListener("click", async ()=>{
-  const text = $("#reportBox").textContent || "";
-  if(!text || text.includes("尚未生成")){
-    alert("請先生成理專報告。");
-    return;
-  }
-  try{
-    await navigator.clipboard.writeText(text);
-    alert("已複製理專報告到剪貼簿。");
-  }catch{
-    alert("複製失敗：瀏覽器可能限制 clipboard。你可以手動全選報告文字複製。");
-  }
-});
+    /** =========================
+     *  Scenario tip (即時提示)
+     *  用部分條件找「大致相近」樣本，再看 needs 分佈
+     * ========================= */
+    function partialMatchScore(u, c){
+      let s = 0, w = 0;
+      if(u.gender){ w+=1; if(u.gender===c.gender) s+=1; }
+      if(u.ageBand){ w+=1; if(u.ageBand===c.ageBand) s+=1; }
+      if(u.family){ w+=1; if(u.family===c.family) s+=1; }
+      if(u.income && u.income!=="暫不提供"){ w+=1; if(u.income===c.income) s+=1; }
+      if(u.jobRisk){ w+=1; s += Math.max(0, 1 - 0.25*Math.abs(u.jobRisk - c.jobRisk)); }
+      return w===0 ? 0 : s/w;
+    }
 
-$("#reset").addEventListener("click", ()=>{
-  // reset state
-  state.agree=false; state.gender=""; state.ageBand="";
-  state.jobTitle=""; state.jobRisk=null; state.income=""; state.family=""; state.needs=[];
-  window.__last = null;
+    function updateScenarioTip(){
+      const el = $("#scenarioTip");
 
-  $("#agree").checked=false;
-  $("#jobTitle").value="";
-  $("#jobHint").innerHTML = `系統判斷：<strong>尚未判斷</strong>（你仍可手動點選等級）`;
+      const filledAny = state.gender || state.ageBand || state.family || state.income || state.jobRisk;
+      if(!filledAny){
+        el.innerHTML = `先完成基本資料，系統會根據相似客群資料庫，提供「像您這樣的客戶通常會先做什麼」的提示。`;
+        return;
+      }
 
-  // clear pressed
-  $$(".opt[data-field]").forEach(btn=>btn.setAttribute("aria-pressed","false"));
+      // pick top matches by partial score
+      const scored = CASE_DB
+        .map(c=>({c, s: partialMatchScore(state, c)}))
+        .sort((a,b)=>b.s-a.s)
+        .slice(0, 5)
+        .filter(x=>x.s>0);
 
-  // clear needs
-  $$("#needs input[type='checkbox']").forEach(c=>c.checked=false);
-  readNeeds();
+      if(!scored.length){
+        el.innerHTML = `目前資料不足以形成穩定輪廓。建議先補齊：年齡段、職業等級與家庭結構。`;
+        return;
+      }
 
-  $("#summary").textContent = "尚未生成";
-  $("#similar").innerHTML = `<div class="small">尚未生成</div>`;
-  $("#reco").innerHTML = `<div class="small">尚未生成</div>`;
-  $("#reportBox").textContent = "尚未生成";
+      const counts = new Map();
+      let total = 0;
+      for(const x of scored){
+        for(const n of x.c.needs){
+          counts.set(n, (counts.get(n)||0) + 1);
+          total += 1;
+        }
+      }
 
-  $("#genReport").disabled = true;
-  $("#copyReport").disabled = true;
+      const entries = Array.from(counts.entries()).sort((a,b)=>b[1]-a[1]);
+      const top = entries[0];
+      if(!top){
+        el.innerHTML = `像您這樣的客戶多半會先確認「保障缺口」與保費可負擔性。`;
+        return;
+      }
+      const pct = Math.round((top[1] / total) * 100);
 
-  sync();
-});
+      el.innerHTML = `
+        像您這樣的客戶，<b>${pct}%</b> 在第一輪會優先考慮 <b>${top[0]}</b>。<br/>
+        建議操作：先完成分析 → 再到「建議方案」頁看保額落點；若不確定需求，可按「不確定？幫我推薦」。
+      `;
+    }
 
-// init
-sync();
-</script>
+    /** =========================
+     *  Auto needs (不確定？幫我推薦)
+     * ========================= */
+    function recommendNeeds(u){
+      const set = new Set();
+      // 基本：若資料不足，先勾保障型
+      if(!u.ageBand || !u.family || !u.jobRisk) {
+        set.add("保障型保單");
+        return Array.from(set);
+      }
+
+      // 高齡/家庭責任/職業風險 → 保障型
+      set.add("保障型保單");
+      if((u.ageBand||"").startsWith("60") || u.ageBand==="70+") set.add("儲蓄型保單");
+      if(["核心家庭","夫妻家庭","單親家庭","三代家庭","祖孫家庭"].includes(u.family)) set.add("保障型保單");
+
+      // 高收入偏向資產配置：可加投資型/儲蓄型（demo）
+      if(u.income==="300萬以上") set.add("投資型保單");
+      if(u.income==="150萬到300萬") set.add("儲蓄型保單");
+
+      // 若選「暫不提供」：保守一點
+      if(u.income==="暫不提供") set.add("儲蓄型保單");
+
+      return Array.from(set);
+    }
+
+    function applyNeeds(values){
+      const checks = $$("#needs input[type='checkbox']");
+      checks.forEach(c=>{
+        c.checked = values.includes(c.value);
+      });
+      readNeeds();
+    }
+
+    /** =========================
+     *  Loader simulation
+     * ========================= */
+    async function runAnalysisWithLoader(fn){
+      window.__analyzing = true;
+      $("#loader").classList.add("show");
+      $("#loaderFill").style.width = "0%";
+      $("#loaderPct").textContent = "0%";
+      sync();
+
+      let p = 0;
+      const timer = setInterval(()=>{
+        p = Math.min(100, p + (Math.random()*18 + 6));
+        $("#loaderFill").style.width = `${p}%`;
+        $("#loaderPct").textContent = `${Math.round(p)}%`;
+      }, 120);
+
+      // simulate compute time
+      await new Promise(r=>setTimeout(r, 1100));
+      clearInterval(timer);
+      $("#loaderFill").style.width = "100%";
+      $("#loaderPct").textContent = "100%";
+
+      await new Promise(r=>setTimeout(r, 180));
+      $("#loader").classList.remove("show");
+      window.__analyzing = false;
+
+      fn();
+      sync();
+    }
+
+    /** =========================
+     *  Events
+     * ========================= */
+    $("#agree").addEventListener("change", e=>{
+      state.agree = e.target.checked;
+      sync();
+    });
+
+    $$(".option-btn[data-field]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        setPressed(btn.dataset.field, btn.dataset.value);
+      });
+    });
+
+    $$("#needs input[type='checkbox']").forEach(c=>{
+      c.addEventListener("change", readNeeds);
+    });
+
+    $("#autoNeeds").addEventListener("click", ()=>{
+      applyNeeds(recommendNeeds(state));
+      toast("✨ 已依情境推薦需求");
+    });
+
+    $("#jobTitle").addEventListener("input", e=>{
+      state.jobTitle = e.target.value || "";
+      const r = inferJobRisk(state.jobTitle);
+      $("#jobHint").innerHTML = `系統判斷：<strong>等級 ${r.level}</strong>（${r.reason}）<br><span style="color:var(--text-muted);font-size:11px;">可直接手動改等級，系統會以你手動選的為準。</span>`;
+      autoSelectJobRisk(r.level);
+      sync();
+    });
+
+    // Tabs
+    $$(".tab").forEach(b=>{
+      b.addEventListener("click", ()=> setTab(b.dataset.tab));
+    });
+
+    // Report collapse
+    $("#toggleReport").addEventListener("click", ()=>{
+      const box = $("#reportBox");
+      if(box.style.maxHeight === "420px" || !box.style.maxHeight){
+        box.style.maxHeight = "none";
+      }else{
+        box.style.maxHeight = "420px";
+      }
+    });
+
+    // Main analysis
+    $("#run").addEventListener("click", async ()=>{
+      await runAnalysisWithLoader(()=>{
+        renderSummary();
+
+        const simCases = topSimilarCases(state, 3);
+        renderSimilar(simCases);
+
+        const agg = aggregateCoverage(simCases);
+        const wanted = personaTypeBoost(state);
+        for(const t of wanted){
+          const exists = agg.some(x=>x.type===t);
+          if(!exists) agg.push({type:t, unit:"NTD", amounts:[], typical:null, count:0, weight:0.01});
+        }
+        agg.sort((a,b)=>b.weight-a.weight);
+        const recoAgg = agg.slice(0,6);
+        renderRecoCards(recoAgg);
+
+        window.__last = { simCases, recoAgg };
+
+        $("#reportBox").textContent = "✅ 已生成相似輪廓與建議方案。切到「理專報告」分頁後再按「生成理專報告」。";
+        $("#tldr").style.display = "none";
+        $("#toggleReport").disabled = true;
+
+        // switch to reco tab
+        setTab("t-reco");
+        toast("✅ 已完成分析並產生推薦");
+      });
+    });
+
+    $("#genReport").addEventListener("click", async ()=>{
+      if(!window.__last){
+        $("#reportBox").textContent = "❌ 請先按「分析並產生推薦方案」。";
+        return;
+      }
+      const {simCases, recoAgg} = window.__last;
+
+      await runAnalysisWithLoader(()=>{
+        const text = generateAdvisorReport(state, simCases, recoAgg);
+        $("#reportBox").textContent = text;
+
+        $("#tldrText").innerHTML = buildTLDR(state, recoAgg);
+        $("#tldr").style.display = "block";
+        $("#toggleReport").disabled = false;
+
+        // show floating bar
+        $("#fab").classList.add("show");
+
+        setTab("t-report");
+        toast("📝 已生成理專報告");
+      });
+    });
+
+    async function copyReport(){
+      const text = $("#reportBox").textContent || "";
+      if(!text || text.includes("尚未生成")){
+        alert("請先生成理專報告。");
+        return;
+      }
+      try{
+        await navigator.clipboard.writeText(text);
+        toast("📋 已複製報告");
+      }catch{
+        alert("複製失敗：瀏覽器可能限制 clipboard。你可以手動全選報告文字複製。");
+      }
+    }
+
+    $("#copyReport").addEventListener("click", copyReport);
+    $("#fabCopy").addEventListener("click", copyReport);
+
+    $("#fabPrint").addEventListener("click", ()=>{
+      // 用列印另存 PDF（不需要外部套件，GitHub Pages 也穩）
+      window.print();
+    });
+
+    $("#fabShare").addEventListener("click", async ()=>{
+      const url = location.href;
+      const text = "法國巴黎人壽｜智能保單推薦系統 Demo（相似個案 + 理專報告）";
+      if(navigator.share){
+        try{
+          await navigator.share({title: document.title, text, url});
+          toast("🔗 已分享");
+        }catch{}
+      }else{
+        try{
+          await navigator.clipboard.writeText(url);
+          toast("🔗 已複製網址（此瀏覽器不支援分享）");
+        }catch{
+          alert("此瀏覽器不支援分享/複製，請手動複製網址。");
+        }
+      }
+    });
+
+    $("#reset").addEventListener("click", ()=>{
+      // reset state
+      state.agree=false; state.gender=""; state.ageBand="";
+      state.jobTitle=""; state.jobRisk=null; state.income=""; state.family=""; state.needs=[];
+      window.__last = null;
+
+      $("#agree").checked=false;
+      $("#jobTitle").value="";
+      $("#jobHint").innerHTML = `系統判斷：<strong>尚未判斷</strong>`;
+
+      $$(".option-btn[data-field]").forEach(btn=>btn.setAttribute("aria-pressed","false"));
+      $$("#needs input[type='checkbox']").forEach(c=>c.checked=false);
+      readNeeds();
+
+      $("#summary").innerHTML = `<div class="empty-state">尚未生成</div>`;
+      $("#similar").innerHTML = `<div class="empty-state">尚未生成</div>`;
+      $("#reco").innerHTML = `<div class="empty-state">尚未生成</div>`;
+      $("#reportBox").textContent = "尚未生成";
+      $("#tldr").style.display = "none";
+
+      // reset steps
+      $$(".step").forEach(step => step.classList.remove("active","completed"));
+      $("#step1").classList.add("active");
+
+      // hide fab
+      $("#fab").classList.remove("show");
+
+      // clear draft
+      localStorage.removeItem(DRAFT_KEY);
+      $("#draftState").textContent = "草稿：未儲存";
+
+      setTab("t-sim");
+      toast("🔄 已清除並重填");
+      sync();
+    });
+
+    /** =========================
+     *  Init
+     * ========================= */
+    bindAccordions();
+    loadDraft();
+
+    // apply draft to UI
+    $("#agree").checked = state.agree;
+
+    function applyPressed(field, value){
+      if(!value) return;
+      $$(`.option-btn[data-field="${field}"]`).forEach(btn=>{
+        btn.setAttribute("aria-pressed", btn.dataset.value===value ? "true":"false");
+      });
+    }
+    applyPressed("gender", state.gender);
+    applyPressed("ageBand", state.ageBand);
+    applyPressed("income", state.income);
+    applyPressed("family", state.family);
+    if(state.jobRisk) applyPressed("jobRisk", String(state.jobRisk));
+
+    $("#jobTitle").value = state.jobTitle || "";
+    if(state.jobTitle){
+      const r = inferJobRisk(state.jobTitle);
+      $("#jobHint").innerHTML = `系統判斷：<strong>等級 ${r.level}</strong>（${r.reason}）<br><span style="color:var(--text-muted);font-size:11px;">可直接手動改等級，系統會以你手動選的為準。</span>`;
+      // keep draft jobRisk if exists; else auto
+      if(!state.jobRisk) autoSelectJobRisk(r.level);
+    }
+
+    // needs apply
+    if(state.needs.length){
+      applyNeeds(state.needs);
+    }
+
+    sync();
+  </script>
 </body>
 </html>
