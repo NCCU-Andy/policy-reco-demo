@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>保單推薦系統 Demo（相似個案推薦 + AI總結）</title>
+  <style>
+    :root{
+      --bg:#f6f7f7;
+      --ink:#0f172a;
+      --muted:#475569;
+      --green:#0b6b57;
+      --soft:#e7f4f0;
+      --card:#ffffff;
+      --shadow:0 10px 25px rgba(2,6,23,.08);
+      --r:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Noto Sans TC", Arial, sans-serif;
+      color:var(--ink);
+      background: linear-gradient(180deg, #eef7f4 0%, var(--bg) 45%);
+    }
+    header{
+      max-width:1200px;
+      margin:0 auto;
+      padding:22px 16px 10px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-end;
+    }
+    .brand{display:flex; gap:12px; align-items:center;}
+    .logo{
+      width:44px;height:44px;border-radius:14px;
+      background: radial-gradient(circle at 30% 30%, #1aa184, var(--green));
+      box-shadow: var(--shadow);
+    }
+    h1{margin:0;font-size:20px}
+    .sub{margin-top:6px;color:var(--muted);font-size:12px;line-height:1.6}
+    .pill{
+      display:inline-flex; gap:6px; align-items:center;
+      padding:6px 10px; border-radius:999px;
+      background: rgba(11,107,87,.10);
+      color: var(--green);
+      font-weight:900; font-size:12px;
+      border:1px solid rgba(11,107,87,.25);
+      white-space:nowrap;
+    }
+
+    main{
+      max-width:1200px;
+      margin:0 auto;
+      padding:12px 16px 36px;
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      main{grid-template-columns:1fr}
+      header{align-items:flex-start; flex-direction:column}
+    }
+
+    .panel{
+      background:var(--card);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      border:1px solid rgba(2,6,23,.06);
+      overflow:hidden;
+    }
+    .panel-head{
+      padding:14px 14px 10px;
+      border-bottom:1px solid rgba(2,6,23,.06);
+      display:flex; justify-content:space-between; gap:10px; align-items:flex-start;
+    }
+    .panel-head strong{font-size:14px}
+    .panel-head span{display:block; color:var(--muted); font-size:12px; margin-top:4px; line-height:1.5}
+    .badge{
+      border:2px solid var(--green);
+      color:var(--green);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:900;
+      background:#fff;
+      white-space:nowrap;
+    }
+
+    .content{padding:14px}
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+    }
+    @media (max-width: 980px){ .grid{grid-template-columns: repeat(2, 1fr);} }
+    @media (max-width: 560px){ .grid{grid-template-columns: 1fr;} }
+
+    .card{
+      border:3px solid var(--green);
+      border-radius: var(--r);
+      padding:12px;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfdfc 100%);
+      position:relative;
+      min-height: 160px;
+    }
+    .cap{
+      position:absolute;
+      left:12px; top:-14px;
+      background:#fff;
+      border:3px solid var(--green);
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:900;
+      box-shadow: 0 6px 16px rgba(2,6,23,.06);
+    }
+
+    .options{margin-top:20px; display:flex; flex-wrap:wrap; gap:10px;}
+    .btn{
+      border:2px solid rgba(2,6,23,.10);
+      background:#fff;
+      padding:10px 10px;
+      border-radius:14px;
+      cursor:pointer;
+      font-size:13px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+      transition:.15s transform, .15s background, .15s border-color;
+      position:relative;
+    }
+    .btn:hover{transform: translateY(-1px); border-color: rgba(11,107,87,.5)}
+    .btn[aria-pressed="true"]{
+      border-color: var(--green);
+      background: var(--soft);
+      box-shadow: 0 8px 18px rgba(11,107,87,.14);
+    }
+    .btn[aria-pressed="true"]::after{
+      content:"✓";
+      position:absolute;
+      right:10px; top:8px;
+      width:22px;height:22px;border-radius:999px;
+      background: var(--green);
+      color:#fff;
+      display:grid; place-items:center;
+      font-weight:900;
+      font-size:14px;
+    }
+    select, input[type="number"]{
+      width:100%;
+      margin-top:20px;
+      border:2px solid rgba(2,6,23,.12);
+      border-radius:14px;
+      padding:12px 12px;
+      font-size:13px;
+      outline:none;
+      background:#fff;
+    }
+    select:focus, input[type="number"]:focus{
+      border-color: var(--green);
+      box-shadow: 0 0 0 4px rgba(11,107,87,.12);
+    }
+
+    .need-grid{
+      margin-top:20px;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:10px;
+    }
+    .need{
+      border:2px dashed rgba(11,107,87,.45);
+      border-radius:16px;
+      padding:10px;
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      cursor:pointer;
+      background:#fff;
+      transition:.15s background, .15s border-color;
+    }
+    .need input{width:18px;height:18px;margin-top:2px}
+    .need strong{font-size:13px}
+    .need small{display:block;color:var(--muted);font-size:11px;margin-top:2px;line-height:1.4}
+    .need.on{
+      background: var(--soft);
+      border-color: var(--green);
+    }
+
+    .consent{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:12px;
+      border-radius:16px;
+      background: #fff;
+      border:2px solid rgba(2,6,23,.08);
+      margin-bottom:12px;
+    }
+    .consent input{width:18px;height:18px;margin-top:2px}
+    .consent p{margin:0;font-size:12px;color:var(--muted);line-height:1.6}
+
+    .actions{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin-top:12px;
+    }
+    .primary, .ghost{
+      border:none;
+      border-radius:14px;
+      padding:12px 14px;
+      font-weight:900;
+      cursor:pointer;
+      font-size:13px;
+    }
+    .primary{
+      background: var(--green);
+      color:#fff;
+      box-shadow: 0 10px 22px rgba(11,107,87,.18);
+    }
+    .primary:disabled{opacity:.5; cursor:not-allowed; box-shadow:none;}
+    .ghost{
+      background:#fff;
+      border:2px solid rgba(2,6,23,.12);
+      color:var(--ink);
+    }
+
+    .side{padding:14px}
+    .section{margin-bottom:12px;}
+    .k{font-size:11px;color:var(--muted)}
+    .v{margin-top:4px;font-weight:900;font-size:13px}
+    .row{
+      border:1px solid rgba(2,6,23,.08);
+      border-radius:14px;
+      padding:10px;
+      background:#fff;
+      margin-bottom:10px;
+    }
+    .cards{display:grid; gap:10px;}
+    .reco-card{
+      border:1px solid rgba(2,6,23,.10);
+      border-radius:16px;
+      padding:12px;
+      background:#fff;
+    }
+    .reco-card h3{margin:0;font-size:14px}
+    .meta{margin-top:6px;color:var(--muted);font-size:12px;line-height:1.5}
+    .tags{margin-top:10px; display:flex; flex-wrap:wrap; gap:6px;}
+    .tag{
+      font-size:11px;
+      padding:5px 9px;
+      border-radius:999px;
+      background: rgba(11,107,87,.10);
+      color: var(--green);
+      border:1px solid rgba(11,107,87,.25);
+      font-weight:900;
+    }
+    .ai-box{
+      background: #0b1220;
+      color:#e2e8f0;
+      border-radius:16px;
+      padding:12px;
+      font-size:12px;
+      line-height:1.6;
+      white-space:pre-wrap;
+      min-height:120px;
+    }
+    .small{font-size:12px;color:var(--muted);line-height:1.6}
+    .warn{color:#b45309}
+    .split{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="brand">
+    <div class="logo" aria-hidden="true"></div>
+    <div>
+      <h1>保單推薦系統 Demo</h1>
+      <div class="sub">
+        相似個案推薦（Case-Based Reasoning）＋ AI 總結小建議（模板生成，可換成真的 LLM）。
+      </div>
+    </div>
+  </div>
+  <div class="pill">純前端｜Live Server 可直接跑</div>
+</header>
+
+<main>
+  <!-- LEFT: input -->
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <strong>輸入條件</strong>
+        <span>填寫基本資訊 → 系統會從資料庫找相似個案並推薦保單組合。</span>
+      </div>
+      <div class="badge">Input</div>
+    </div>
+
+    <div class="content">
+      <div class="consent">
+        <input id="agree" type="checkbox" />
+        <p>
+          <strong style="color:#0f172a">個資/使用聲明（Demo）</strong><br/>
+          本頁僅示範：資料不會上傳伺服器；推薦為教育性參考，非保險/投資建議，實際投保以保單條款與核保結果為準。
+        </p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="cap">性別</div>
+          <div class="options" role="group" aria-label="性別">
+            <button class="btn" data-field="gender" data-value="生理男" aria-pressed="false">生理男</button>
+            <button class="btn" data-field="gender" data-value="生理女" aria-pressed="false">生理女</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cap">年齡</div>
+          <input id="age" type="number" min="0" max="100" placeholder="例如：35" />
+          <div class="small">系統會自動換算 10 歲區間。</div>
+        </div>
+
+        <div class="card">
+          <div class="cap">職業危險等級</div>
+          <div class="options" role="group" aria-label="職業危險等級">
+            <button class="btn" data-field="jobRisk" data-value="1" aria-pressed="false">等級一</button>
+            <button class="btn" data-field="jobRisk" data-value="2" aria-pressed="false">等級二</button>
+            <button class="btn" data-field="jobRisk" data-value="3" aria-pressed="false">等級三</button>
+            <button class="btn" data-field="jobRisk" data-value="4" aria-pressed="false">等級四</button>
+            <button class="btn" data-field="jobRisk" data-value="5" aria-pressed="false">等級五</button>
+            <button class="btn" data-field="jobRisk" data-value="6" aria-pressed="false">等級六</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cap">年收入</div>
+          <select id="income">
+            <option value="">請選擇</option>
+            <option value="70萬以下">70萬以下</option>
+            <option value="70萬到150萬">70萬到150萬</option>
+            <option value="150萬到300萬">150萬到300萬</option>
+            <option value="300萬以上">300萬以上</option>
+          </select>
+        </div>
+
+        <div class="card">
+          <div class="cap">家庭結構</div>
+          <select id="family">
+            <option value="">請選擇</option>
+            <option>單人戶</option>
+            <option>夫妻家庭</option>
+            <option>單親家庭</option>
+            <option>核心家庭</option>
+            <option>祖孫家庭</option>
+            <option>三代家庭</option>
+            <option>其他</option>
+          </select>
+        </div>
+
+        <div class="card">
+          <div class="cap">投保需求（可複選）</div>
+          <div class="need-grid" id="needs">
+            <label class="need">
+              <input type="checkbox" value="保障型保單" />
+              <div><strong>保障型</strong><small>醫療/意外/重大傷病/壽險等缺口補強</small></div>
+            </label>
+            <label class="need">
+              <input type="checkbox" value="儲蓄型保單" />
+              <div><strong>儲蓄型</strong><small>偏穩健、保費規劃、資金準備</small></div>
+            </label>
+            <label class="need">
+              <input type="checkbox" value="還本型保單" />
+              <div><strong>還本型</strong><small>偏返還設計（仍需注意條款與限制）</small></div>
+            </label>
+            <label class="need">
+              <input type="checkbox" value="投資型保單" />
+              <div><strong>投資型</strong><small>追求報酬、承擔波動（非保本）</small></div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="run" disabled>找相似個案並推薦</button>
+        <button class="ghost" id="reset">清除重填</button>
+        <button class="ghost" id="showDb">查看案例資料庫（簡版）</button>
+      </div>
+
+      <div class="small warn" id="hint"></div>
+    </div>
+  </section>
+
+  <!-- RIGHT: output -->
+  <aside class="panel">
+    <div class="panel-head">
+      <div>
+        <strong>推薦結果</strong>
+        <span>顯示：Top 相似個案、推薦組合、AI 總結建議。</span>
+      </div>
+      <div class="badge">Output</div>
+    </div>
+
+    <div class="side">
+      <div class="split">
+        <div class="section">
+          <div class="row">
+            <div class="k">你的條件摘要</div>
+            <div class="v" id="summary">尚未生成</div>
+          </div>
+          <div class="row">
+            <div class="k">Top 相似個案（前 3 名）</div>
+            <div class="cards" id="similar"></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="row">
+            <div class="k">推薦保單組合（由相似個案投保偏好彙整）</div>
+            <div class="cards" id="reco"></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="row">
+            <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;">
+              <div>
+                <div class="k">AI 總結小建議（Demo）</div>
+                <div class="small">目前用模板生成，未連外；你們要換成真正 AI 也很容易（我下面也會教）。</div>
+              </div>
+              <button class="ghost" id="genAi">生成建議</button>
+            </div>
+            <div class="ai-box" id="aiBox">尚未生成</div>
+          </div>
+        </div>
+
+        <div class="small">
+          <strong>提醒：</strong>此推薦為 Demo；正式版需加入：條款檢核、核保限制、保費估算、風險承受度問卷、以及資料治理（去識別化/權限控管）。
+        </div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<script>
+/** =========================================================
+ *  1) 案例資料庫（你們之後把這塊換成真實案例即可）
+ *     欄位：使用者特徵 + 他最後選的投保組合（policies）
+ * ========================================================= */
+const CASE_DB = [
+  {
+    id:"C001",
+    gender:"生理男",
+    age:35,
+    jobRisk:2,
+    income:"300萬以上",
+    family:"核心家庭",
+    needs:["保障型保單","投資型保單"],
+    policies:[
+      {type:"醫療", name:"實支實付 + 住院日額", tags:["住院","手術","自費項目"]},
+      {type:"意外", name:"意外身故/失能 + 意外醫療", tags:["職業風險","通勤"]},
+      {type:"重大傷病", name:"重大傷病一次金", tags:["癌症/重大傷病","一次金"]},
+      {type:"投資型", name:"投資型保單（中高風險配置）", tags:["RR4","波動承擔"]},
+    ]
+  },
+  {
+    id:"C002",
+    gender:"生理女",
+    age:29,
+    jobRisk:1,
+    income:"70萬到150萬",
+    family:"單人戶",
+    needs:["保障型保單","儲蓄型保單"],
+    policies:[
+      {type:"醫療", name:"實支實付（基本）", tags:["住院","手術"]},
+      {type:"意外", name:"意外醫療 + 骨折/燒燙傷", tags:["生活風險"]},
+      {type:"儲蓄", name:"儲蓄型年金/定期儲蓄", tags:["穩健","長期"]},
+    ]
+  },
+  {
+    id:"C003",
+    gender:"生理男",
+    age:52,
+    jobRisk:3,
+    income:"150萬到300萬",
+    family:"夫妻家庭",
+    needs:["保障型保單"],
+    policies:[
+      {type:"醫療", name:"實支實付（提高額度）", tags:["住院","高額自費"]},
+      {type:"重大傷病", name:"癌症/重大傷病一次金（加強）", tags:["家庭責任期"]},
+      {type:"壽險", name:"定期壽險（提高保障額）", tags:["家庭責任","保費效率"]},
+    ]
+  },
+  {
+    id:"C004",
+    gender:"生理女",
+    age:41,
+    jobRisk:2,
+    income:"150萬到300萬",
+    family:"核心家庭",
+    needs:["保障型保單","還本型保單"],
+    policies:[
+      {type:"醫療", name:"實支實付 + 住院日額", tags:["家庭照顧"]},
+      {type:"重大傷病", name:"重大傷病一次金", tags:["一次金"]},
+      {type:"還本", name:"還本型（注意解約/返還條件）", tags:["返還","條款限制"]},
+    ]
+  },
+  {
+    id:"C005",
+    gender:"生理男",
+    age:24,
+    jobRisk:4,
+    income:"70萬以下",
+    family:"單人戶",
+    needs:["保障型保單"],
+    policies:[
+      {type:"意外", name:"高職業等級意外方案", tags:["職業風險","較高保費"]},
+      {type:"醫療", name:"住院日額（入門）", tags:["保費敏感"]},
+    ]
+  },
+  {
+    id:"C006",
+    gender:"生理女",
+    age:67,
+    jobRisk:1,
+    income:"70萬到150萬",
+    family:"三代家庭",
+    needs:["保障型保單","儲蓄型保單"],
+    policies:[
+      {type:"醫療", name:"醫療補強（門急診/住院）", tags:["高齡"]},
+      {type:"長照", name:"長照/失能扶助（示意）", tags:["照護","家庭負擔"]},
+      {type:"儲蓄", name:"保守型儲蓄/年金", tags:["穩健"]},
+    ]
+  }
+];
+
+/** =========================================================
+ *  2) 狀態 & UI 綁定
+ * ========================================================= */
+const state = {
+  agree:false,
+  gender:"",
+  age:null,
+  ageBand:"",
+  jobRisk:null,
+  income:"",
+  family:"",
+  needs:[]
+};
+
+const $ = (s)=>document.querySelector(s);
+const $$ = (s)=>Array.from(document.querySelectorAll(s));
+
+function ageToBand(age){
+  const lo = Math.floor(age/10)*10;
+  const hi = lo+9;
+  return `${lo}-${hi}`;
+}
+
+function setPressed(field, value){
+  $$(`.btn[data-field="${field}"]`).forEach(btn=>{
+    const on = btn.dataset.value === value;
+    btn.setAttribute("aria-pressed", on ? "true":"false");
+  });
+  if(field==="jobRisk") state.jobRisk = Number(value);
+  else state[field] = value;
+  sync();
+}
+
+function readNeeds(){
+  const checks = $$("#needs input[type='checkbox']");
+  state.needs = checks.filter(c=>c.checked).map(c=>c.value);
+  checks.forEach(c=>c.closest(".need").classList.toggle("on", c.checked));
+  sync();
+}
+
+function validate(){
+  const ok =
+    state.agree &&
+    state.gender &&
+    Number.isFinite(state.age) &&
+    state.age >= 0 &&
+    state.jobRisk &&
+    state.income &&
+    state.family;
+  return ok;
+}
+
+function sync(){
+  $("#run").disabled = !validate();
+  if(!state.agree){
+    $("#hint").textContent = "請先勾選個資/使用聲明，並完成必要欄位。";
+  }else{
+    $("#hint").textContent = "";
+  }
+}
+
+/** =========================================================
+ *  3) 相似度計算（Case-Based Recommendation）
+ *     你們之後可以把權重改成模型學出來的
+ * ========================================================= */
+function overlapScore(a, b){
+  if(!a.length || !b.length) return 0;
+  const A = new Set(a);
+  const B = new Set(b);
+  let inter=0;
+  for(const x of A) if(B.has(x)) inter++;
+  const union = new Set([...A, ...B]).size;
+  return inter / union; // Jaccard
+}
+
+function similarity(user, c){
+  // 權重可調整（demo）
+  let score = 0;
+
+  // 類別欄位：相同給分
+  score += (user.gender === c.gender) ? 1.2 : 0;
+  score += (user.income === c.income) ? 1.2 : 0;
+  score += (user.family === c.family) ? 1.0 : 0;
+
+  // 職業等級：越接近越好
+  score += Math.max(0, 1.2 - 0.3*Math.abs(user.jobRisk - c.jobRisk));
+
+  // 年齡：差距越小越好
+  score += Math.max(0, 1.4 - 0.05*Math.abs(user.age - c.age));
+
+  // 需求：重疊度（可複選）
+  score += 1.6 * overlapScore(user.needs, c.needs);
+
+  return score;
+}
+
+function topSimilarCases(user, k=3){
+  const scored = CASE_DB.map(c => ({...c, sim: similarity(user, c)}));
+  scored.sort((a,b)=>b.sim-a.sim);
+  return scored.slice(0,k);
+}
+
+/** =========================================================
+ *  4) 從相似個案彙整推薦（投保組合投票/加權）
+ * ========================================================= */
+function aggregateRecommendations(simCases){
+  // 用相似度當權重做投票
+  const map = new Map(); // key -> {weight, item}
+  for(const c of simCases){
+    for(const p of c.policies){
+      const key = `${p.type}::${p.name}`;
+      const w = c.sim;
+      if(!map.has(key)){
+        map.set(key, {weight:w, item:p, count:1});
+      }else{
+        const obj = map.get(key);
+        obj.weight += w;
+        obj.count += 1;
+      }
+    }
+  }
+  const arr = Array.from(map.values());
+  arr.sort((a,b)=>b.weight-a.weight);
+  return arr.slice(0,6);
+}
+
+/** =========================================================
+ *  5) AI 小建議（本地模板生成版）
+ *     你們之後要接真的 AI：把 generateAiAdvice() 改成 call API 即可
+ * ========================================================= */
+function personaHints(user){
+  const hints = [];
+  if(user.age>=30 && user.age<=49) hints.push("處於家庭責任/收入成長期，建議先把「保障缺口」補齊再談進階配置。");
+  if(user.age>=60) hints.push("高齡階段建議優先檢視醫療與照護風險（門急診/住院/長照等）。");
+  if(user.jobRisk>=4) hints.push("職業危險等級較高，意外/失能的保障重要性上升。");
+  if(user.family.includes("核心") || user.family.includes("三代")) hints.push("家庭結構可能帶來照護/教育/扶養支出風險，建議提高保障額與一次金設計。");
+  return hints;
+}
+
+function generateAiAdvice(user, simCases, recos){
+  const needsLine = user.needs.length ? `需求偏好：${user.needs.join("、")}` : "尚未勾選需求偏好（建議至少勾選「保障型」或「投資型」）。";
+  const topCase = simCases[0];
+  const whyLike = [
+    `性別${user.gender===topCase.gender?"相同":"不同"}`,
+    `年齡差${Math.abs(user.age-topCase.age)}歲`,
+    `職業等級差${Math.abs(user.jobRisk-topCase.jobRisk)}`,
+    `收入${user.income===topCase.income?"同區間":"不同區間"}`,
+    `家庭結構${user.family===topCase.family?"相同":"不同"}`
+  ].join("、");
+
+  const bullets = recos.slice(0,4).map(x=>`- ${x.item.type}：${x.item.name}（相似個案採用 ${x.count} 次）`).join("\n");
+
+  const hints = personaHints(user);
+  const hintText = hints.length ? hints.map(h=>`- ${h}`).join("\n") : "- 目前條件下建議以基本保障盤點為主，確認缺口後再加碼進階型商品。";
+
+  const disclaimer =
+`【提醒】本建議為 Demo：以相似個案投保偏好做推論，非核保/理賠承諾；實際商品需依條款、等待期、除外責任、健康告知與核保結果為準。投資型保單非存款、不保本，淨值可能波動。`;
+
+  return `【AI 總結建議（Demo）】
+你目前的條件：${user.gender}、${user.age}歲（${user.ageBand}）、職業等級${user.jobRisk}、${user.income}、${user.family}
+${needsLine}
+
+【相似個案依據】
+最相近個案：${topCase.id}（相似度 ${topCase.sim.toFixed(2)}）
+相似原因：${whyLike}
+
+【建議的投保組合（由相似個案彙整）】
+${bullets}
+
+【下一步建議】
+${hintText}
+- 建議你先確認現有保障（若有）與保費可負擔範圍，再微調保障額度與商品型態。
+- 若要更精準：可加入「現有保單/保額、健康狀況、風險承受度問卷」做缺口計算。
+
+${disclaimer}`;
+}
+
+/** =========================================================
+ *  6) Render
+ * ========================================================= */
+function renderSummary(){
+  $("#summary").textContent =
+    `${state.gender || "—"}｜${state.age ?? "—"}歲（${state.ageBand || "—"}）｜職業等級${state.jobRisk ?? "—"}｜${state.income||"—"}｜${state.family||"—"}｜需求：${state.needs.length?state.needs.join("、"):"未選"}`;
+}
+
+function renderSimilar(simCases){
+  const el = $("#similar");
+  if(!simCases.length){
+    el.innerHTML = `<div class="small">尚未生成</div>`;
+    return;
+  }
+  el.innerHTML = simCases.map(c=>`
+    <div class="reco-card">
+      <h3>個案 ${c.id} <span style="color:#0b6b57">（相似度 ${c.sim.toFixed(2)}）</span></h3>
+      <div class="meta">
+        ${c.gender}｜${c.age}歲｜職業${c.jobRisk}｜${c.income}｜${c.family}<br/>
+        需求：${c.needs.join("、")}
+      </div>
+      <div class="tags">
+        ${c.policies.slice(0,3).map(p=>`<span class="tag">${p.type}</span>`).join("")}
+        ${c.policies.length>3 ? `<span class="tag">+${c.policies.length-3}</span>` : ""}
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderReco(recos){
+  const el = $("#reco");
+  if(!recos.length){
+    el.innerHTML = `<div class="small">尚未生成</div>`;
+    return;
+  }
+  el.innerHTML = recos.map(r=>`
+    <div class="reco-card">
+      <h3>${r.item.type}｜${r.item.name}</h3>
+      <div class="meta">相似個案採用：${r.count} 次｜加權分數：${r.weight.toFixed(2)}</div>
+      <div class="tags">
+        ${(r.item.tags||[]).map(t=>`<span class="tag">${t}</span>`).join("")}
+      </div>
+    </div>
+  `).join("");
+}
+
+/** =========================================================
+ *  7) Events
+ * ========================================================= */
+$("#agree").addEventListener("change", e=>{
+  state.agree = e.target.checked;
+  sync();
+});
+
+$$("#needs input[type='checkbox']").forEach(c=>{
+  c.addEventListener("change", readNeeds);
+});
+
+$("#age").addEventListener("input", e=>{
+  const v = Number(e.target.value);
+  state.age = Number.isFinite(v) ? v : null;
+  state.ageBand = (Number.isFinite(v) ? ageToBand(v) : "");
+  sync();
+});
+
+$("#income").addEventListener("change", e=>{
+  state.income = e.target.value;
+  sync();
+});
+$("#family").addEventListener("change", e=>{
+  state.family = e.target.value;
+  sync();
+});
+
+$$(".btn[data-field]").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    setPressed(btn.dataset.field, btn.dataset.value);
+  });
+});
+
+$("#run").addEventListener("click", ()=>{
+  // 1) summary
+  renderSummary();
+
+  // 2) similar
+  const simCases = topSimilarCases(state, 3);
+  renderSimilar(simCases);
+
+  // 3) aggregate reco
+  const recos = aggregateRecommendations(simCases);
+  renderReco(recos);
+
+  // 4) clear AI box (讓使用者手動點生成)
+  $("#aiBox").textContent = "已生成推薦結果。點右上角「生成建議」即可產生 AI 總結。";
+
+  // cache latest
+  window.__last = {simCases, recos};
+});
+
+$("#genAi").addEventListener("click", ()=>{
+  if(!window.__last){
+    $("#aiBox").textContent = "請先按「找相似個案並推薦」。";
+    return;
+  }
+  const {simCases, recos} = window.__last;
+  $("#aiBox").textContent = generateAiAdvice(state, simCases, recos);
+});
+
+$("#reset").addEventListener("click", ()=>{
+  // reset state
+  state.agree=false; state.gender=""; state.age=null; state.ageBand="";
+  state.jobRisk=null; state.income=""; state.family=""; state.needs=[];
+
+  $("#agree").checked=false;
+  $("#age").value="";
+  $("#income").value="";
+  $("#family").value="";
+  $$(".btn[data-field]").forEach(btn=>btn.setAttribute("aria-pressed","false"));
+  $$("#needs input[type='checkbox']").forEach(c=>c.checked=false);
+  readNeeds();
+
+  $("#summary").textContent = "尚未生成";
+  $("#similar").innerHTML = `<div class="small">尚未生成</div>`;
+  $("#reco").innerHTML = `<div class="small">尚未生成</div>`;
+  $("#aiBox").textContent = "尚未生成";
+  window.__last = null;
+
+  sync();
+});
+
+$("#showDb").addEventListener("click", ()=>{
+  const preview = CASE_DB.slice(0,6).map(c =>
+    `${c.id}｜${c.gender}｜${c.age}｜職業${c.jobRisk}｜${c.income}｜${c.family}｜需求：${c.needs.join("、")}｜投保：${c.policies.map(p=>p.type).join("+")}`
+  ).join("\n");
+  alert("案例資料庫（前 6 筆預覽）\n\n" + preview + "\n\n你們之後可把 CASE_DB 換成真實(去識別化)案例。");
+});
+
+// init
+sync();
+</script>
+</body>
+</html>
