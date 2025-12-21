@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>保單推薦系統 Demo（相似個案推薦 + AI總結）</title>
+  <title>法國巴黎人壽｜保單推薦系統 Demo（相似個案 + 理專報告）</title>
   <style>
     :root{
       --bg:#f6f7f7;
@@ -23,13 +23,14 @@
       background: linear-gradient(180deg, #eef7f4 0%, var(--bg) 45%);
     }
     header{
-      max-width:1200px;
+      max-width:1240px;
       margin:0 auto;
       padding:22px 16px 10px;
       display:flex;
       justify-content:space-between;
       gap:12px;
       align-items:flex-end;
+      flex-wrap:wrap;
     }
     .brand{display:flex; gap:12px; align-items:center;}
     .logo{
@@ -50,16 +51,15 @@
     }
 
     main{
-      max-width:1200px;
+      max-width:1240px;
       margin:0 auto;
-      padding:12px 16px 36px;
+      padding:12px 16px 40px;
       display:grid;
-      grid-template-columns: 1.15fr .85fr;
+      grid-template-columns: 1.1fr .9fr;
       gap:14px;
     }
     @media (max-width: 980px){
       main{grid-template-columns:1fr}
-      header{align-items:flex-start; flex-direction:column}
     }
 
     .panel{
@@ -102,7 +102,7 @@
       padding:12px;
       background: linear-gradient(180deg, #ffffff 0%, #fbfdfc 100%);
       position:relative;
-      min-height: 160px;
+      min-height: 170px;
     }
     .cap{
       position:absolute;
@@ -116,41 +116,58 @@
       box-shadow: 0 6px 16px rgba(2,6,23,.06);
     }
 
-    .options{margin-top:20px; display:flex; flex-wrap:wrap; gap:10px;}
-    .btn{
-      border:2px solid rgba(2,6,23,.10);
+    /* option grid like your screenshot (no dropdown blanks) */
+    .opt-grid{
+      margin-top:22px;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:10px;
+    }
+    .opt-grid.cols-3{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .opt-grid.cols-4{ grid-template-columns: repeat(4, minmax(0,1fr)); }
+    @media (max-width: 560px){
+      .opt-grid.cols-4{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .opt-grid.cols-3{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+
+    .opt{
+      border:2px solid rgba(2,6,23,.12);
       background:#fff;
       padding:10px 10px;
       border-radius:14px;
       cursor:pointer;
       font-size:13px;
+      font-weight:800;
+      user-select:none;
       display:flex;
       align-items:center;
-      gap:8px;
-      user-select:none;
-      transition:.15s transform, .15s background, .15s border-color;
+      justify-content:center;
+      text-align:center;
+      min-height:44px;
       position:relative;
+      transition:.15s transform, .15s background, .15s border-color;
     }
-    .btn:hover{transform: translateY(-1px); border-color: rgba(11,107,87,.5)}
-    .btn[aria-pressed="true"]{
+    .opt:hover{transform: translateY(-1px); border-color: rgba(11,107,87,.55)}
+    .opt[aria-pressed="true"]{
       border-color: var(--green);
       background: var(--soft);
       box-shadow: 0 8px 18px rgba(11,107,87,.14);
     }
-    .btn[aria-pressed="true"]::after{
+    .opt[aria-pressed="true"]::after{
       content:"✓";
       position:absolute;
-      right:10px; top:8px;
-      width:22px;height:22px;border-radius:999px;
+      right:8px; top:8px;
+      width:20px;height:20px;border-radius:999px;
       background: var(--green);
       color:#fff;
       display:grid; place-items:center;
       font-weight:900;
-      font-size:14px;
+      font-size:13px;
     }
-    select, input[type="number"]{
+
+    input[type="text"]{
       width:100%;
-      margin-top:20px;
+      margin-top:22px;
       border:2px solid rgba(2,6,23,.12);
       border-radius:14px;
       padding:12px 12px;
@@ -158,13 +175,21 @@
       outline:none;
       background:#fff;
     }
-    select:focus, input[type="number"]:focus{
+    input[type="text"]:focus{
       border-color: var(--green);
       box-shadow: 0 0 0 4px rgba(11,107,87,.12);
     }
 
+    .help{
+      margin-top:8px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.6;
+    }
+    .help strong{color:#0f172a}
+
     .need-grid{
-      margin-top:20px;
+      margin-top:22px;
       display:grid;
       grid-template-columns: repeat(2, minmax(0,1fr));
       gap:10px;
@@ -183,10 +208,7 @@
     .need input{width:18px;height:18px;margin-top:2px}
     .need strong{font-size:13px}
     .need small{display:block;color:var(--muted);font-size:11px;margin-top:2px;line-height:1.4}
-    .need.on{
-      background: var(--soft);
-      border-color: var(--green);
-    }
+    .need.on{ background: var(--soft); border-color: var(--green); }
 
     .consent{
       display:flex; gap:10px; align-items:flex-start;
@@ -223,10 +245,8 @@
       color:var(--ink);
     }
 
+    /* RIGHT */
     .side{padding:14px}
-    .section{margin-bottom:12px;}
-    .k{font-size:11px;color:var(--muted)}
-    .v{margin-top:4px;font-weight:900;font-size:13px}
     .row{
       border:1px solid rgba(2,6,23,.08);
       border-radius:14px;
@@ -234,6 +254,8 @@
       background:#fff;
       margin-bottom:10px;
     }
+    .k{font-size:11px;color:var(--muted)}
+    .v{margin-top:4px;font-weight:900;font-size:13px}
     .cards{display:grid; gap:10px;}
     .reco-card{
       border:1px solid rgba(2,6,23,.10);
@@ -259,17 +281,13 @@
       border-radius:16px;
       padding:12px;
       font-size:12px;
-      line-height:1.6;
+      line-height:1.65;
       white-space:pre-wrap;
-      min-height:120px;
+      min-height:180px;
     }
-    .small{font-size:12px;color:var(--muted);line-height:1.6}
     .warn{color:#b45309}
-    .split{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:10px;
-    }
+    .small{font-size:12px;color:var(--muted);line-height:1.6}
+    .divider{height:1px;background:rgba(2,6,23,.08);margin:10px 0;}
   </style>
 </head>
 
@@ -278,13 +296,13 @@
   <div class="brand">
     <div class="logo" aria-hidden="true"></div>
     <div>
-      <h1>保單推薦系統 Demo</h1>
+      <h1>法國巴黎人壽｜相似個案保單推薦系統（Demo）</h1>
       <div class="sub">
-        相似個案推薦（Case-Based Reasoning）＋ AI 總結小建議（模板生成，可換成真的 LLM）。
+        以「相似客群投保輪廓」推導建議方案，並輸出「理專可讀的文字報告」。
       </div>
     </div>
   </div>
-  <div class="pill">純前端｜Live Server 可直接跑</div>
+  <div class="pill">GitHub Pages 可公開使用</div>
 </header>
 
 <main>
@@ -292,8 +310,8 @@
   <section class="panel">
     <div class="panel-head">
       <div>
-        <strong>輸入條件</strong>
-        <span>填寫基本資訊 → 系統會從資料庫找相似個案並推薦保單組合。</span>
+        <strong>客戶條件（點選即可，不用下拉）</strong>
+        <span>勾選聲明 → 填選條件 → 找相似個案 → 產生法巴建議方案 + 理專報告。</span>
       </div>
       <div class="badge">Input</div>
     </div>
@@ -302,77 +320,99 @@
       <div class="consent">
         <input id="agree" type="checkbox" />
         <p>
-          <strong style="color:#0f172a">個資/使用聲明（Demo）</strong><br/>
-          本頁僅示範：資料不會上傳伺服器；推薦為教育性參考，非保險/投資建議，實際投保以保單條款與核保結果為準。
+          <strong style="color:#0f172a">聲明（Demo）</strong><br/>
+          本工具僅供提案展示：資料不會上傳伺服器；內容為輔助理解之建議，不構成投保/投資/稅務建議；實際投保以法巴保單條款、核保與銀行通路規範為準。
         </p>
       </div>
 
       <div class="grid">
+        <!-- 性別 -->
         <div class="card">
           <div class="cap">性別</div>
-          <div class="options" role="group" aria-label="性別">
-            <button class="btn" data-field="gender" data-value="生理男" aria-pressed="false">生理男</button>
-            <button class="btn" data-field="gender" data-value="生理女" aria-pressed="false">生理女</button>
+          <div class="opt-grid cols-2" role="group" aria-label="性別">
+            <button class="opt" data-field="gender" data-value="生理男" aria-pressed="false">生理男</button>
+            <button class="opt" data-field="gender" data-value="生理女" aria-pressed="false">生理女</button>
           </div>
         </div>
 
+        <!-- 年齡段 -->
         <div class="card">
-          <div class="cap">年齡</div>
-          <input id="age" type="number" min="0" max="100" placeholder="例如：35" />
-          <div class="small">系統會自動換算 10 歲區間。</div>
+          <div class="cap">年齡段（10歲一區間）</div>
+          <div class="opt-grid cols-4" role="group" aria-label="年齡段">
+            <button class="opt" data-field="ageBand" data-value="0-9" aria-pressed="false">0–9</button>
+            <button class="opt" data-field="ageBand" data-value="10-19" aria-pressed="false">10–19</button>
+            <button class="opt" data-field="ageBand" data-value="20-29" aria-pressed="false">20–29</button>
+            <button class="opt" data-field="ageBand" data-value="30-39" aria-pressed="false">30–39</button>
+            <button class="opt" data-field="ageBand" data-value="40-49" aria-pressed="false">40–49</button>
+            <button class="opt" data-field="ageBand" data-value="50-59" aria-pressed="false">50–59</button>
+            <button class="opt" data-field="ageBand" data-value="60-69" aria-pressed="false">60–69</button>
+            <button class="opt" data-field="ageBand" data-value="70+" aria-pressed="false">70+</button>
+          </div>
+          <div class="help">（你也可以之後加「實際年齡」欄位，但提案展示用區間最直覺。）</div>
         </div>
 
+        <!-- 職業 + 自動判斷 -->
+        <div class="card">
+          <div class="cap">職業（可輸入，自動對照等級）</div>
+          <input id="jobTitle" type="text" placeholder="例如：工程師／業務／護理師／工地師傅／貨車司機…" />
+          <div class="help" id="jobHint">
+            系統判斷：<strong>尚未判斷</strong>（你仍可手動點選等級）
+          </div>
+        </div>
+
+        <!-- 職業危險等級（仍可手動） -->
         <div class="card">
           <div class="cap">職業危險等級</div>
-          <div class="options" role="group" aria-label="職業危險等級">
-            <button class="btn" data-field="jobRisk" data-value="1" aria-pressed="false">等級一</button>
-            <button class="btn" data-field="jobRisk" data-value="2" aria-pressed="false">等級二</button>
-            <button class="btn" data-field="jobRisk" data-value="3" aria-pressed="false">等級三</button>
-            <button class="btn" data-field="jobRisk" data-value="4" aria-pressed="false">等級四</button>
-            <button class="btn" data-field="jobRisk" data-value="5" aria-pressed="false">等級五</button>
-            <button class="btn" data-field="jobRisk" data-value="6" aria-pressed="false">等級六</button>
+          <div class="opt-grid cols-3" role="group" aria-label="職業危險等級">
+            <button class="opt" data-field="jobRisk" data-value="1" aria-pressed="false">等級一</button>
+            <button class="opt" data-field="jobRisk" data-value="2" aria-pressed="false">等級二</button>
+            <button class="opt" data-field="jobRisk" data-value="3" aria-pressed="false">等級三</button>
+            <button class="opt" data-field="jobRisk" data-value="4" aria-pressed="false">等級四</button>
+            <button class="opt" data-field="jobRisk" data-value="5" aria-pressed="false">等級五</button>
+            <button class="opt" data-field="jobRisk" data-value="6" aria-pressed="false">等級六</button>
+          </div>
+          <div class="help">輸入職業後會自動幫你「預選」等級（仍可手動調整）。</div>
+        </div>
+
+        <!-- 年收入 -->
+        <div class="card">
+          <div class="cap">年收入</div>
+          <div class="opt-grid cols-2" role="group" aria-label="年收入">
+            <button class="opt" data-field="income" data-value="70萬以下" aria-pressed="false">70萬以下</button>
+            <button class="opt" data-field="income" data-value="70萬到150萬" aria-pressed="false">70萬到150萬</button>
+            <button class="opt" data-field="income" data-value="150萬到300萬" aria-pressed="false">150萬到300萬</button>
+            <button class="opt" data-field="income" data-value="300萬以上" aria-pressed="false">300萬以上</button>
           </div>
         </div>
 
-        <div class="card">
-          <div class="cap">年收入</div>
-          <select id="income">
-            <option value="">請選擇</option>
-            <option value="70萬以下">70萬以下</option>
-            <option value="70萬到150萬">70萬到150萬</option>
-            <option value="150萬到300萬">150萬到300萬</option>
-            <option value="300萬以上">300萬以上</option>
-          </select>
-        </div>
-
+        <!-- 家庭結構 -->
         <div class="card">
           <div class="cap">家庭結構</div>
-          <select id="family">
-            <option value="">請選擇</option>
-            <option>單人戶</option>
-            <option>夫妻家庭</option>
-            <option>單親家庭</option>
-            <option>核心家庭</option>
-            <option>祖孫家庭</option>
-            <option>三代家庭</option>
-            <option>其他</option>
-          </select>
+          <div class="opt-grid cols-2" role="group" aria-label="家庭結構">
+            <button class="opt" data-field="family" data-value="單人戶" aria-pressed="false">單人戶</button>
+            <button class="opt" data-field="family" data-value="夫妻家庭" aria-pressed="false">夫妻家庭</button>
+            <button class="opt" data-field="family" data-value="單親家庭" aria-pressed="false">單親家庭</button>
+            <button class="opt" data-field="family" data-value="核心家庭" aria-pressed="false">核心家庭</button>
+            <button class="opt" data-field="family" data-value="祖孫家庭" aria-pressed="false">祖孫家庭</button>
+            <button class="opt" data-field="family" data-value="三代家庭" aria-pressed="false">三代家庭</button>
+          </div>
         </div>
 
+        <!-- 投保需求 -->
         <div class="card">
-          <div class="cap">投保需求（可複選）</div>
+          <div class="cap">投保需求為何？（可複選）</div>
           <div class="need-grid" id="needs">
             <label class="need">
               <input type="checkbox" value="保障型保單" />
-              <div><strong>保障型</strong><small>醫療/意外/重大傷病/壽險等缺口補強</small></div>
+              <div><strong>保障型</strong><small>醫療/意外/重大傷病/壽險缺口補強</small></div>
             </label>
             <label class="need">
               <input type="checkbox" value="儲蓄型保單" />
-              <div><strong>儲蓄型</strong><small>偏穩健、保費規劃、資金準備</small></div>
+              <div><strong>儲蓄型</strong><small>穩健資金準備、偏保守</small></div>
             </label>
             <label class="need">
               <input type="checkbox" value="還本型保單" />
-              <div><strong>還本型</strong><small>偏返還設計（仍需注意條款與限制）</small></div>
+              <div><strong>還本型</strong><small>偏返還設計（注意條款限制）</small></div>
             </label>
             <label class="need">
               <input type="checkbox" value="投資型保單" />
@@ -383,12 +423,13 @@
       </div>
 
       <div class="actions">
-        <button class="primary" id="run" disabled>找相似個案並推薦</button>
+        <button class="primary" id="run" disabled>找相似個案 → 產生法巴建議</button>
+        <button class="ghost" id="genReport" disabled>生成理專報告（AI 文字）</button>
+        <button class="ghost" id="copyReport" disabled>複製理專報告</button>
         <button class="ghost" id="reset">清除重填</button>
-        <button class="ghost" id="showDb">查看案例資料庫（簡版）</button>
       </div>
 
-      <div class="small warn" id="hint"></div>
+      <div class="help warn" id="hint"></div>
     </div>
   </section>
 
@@ -396,48 +437,40 @@
   <aside class="panel">
     <div class="panel-head">
       <div>
-        <strong>推薦結果</strong>
-        <span>顯示：Top 相似個案、推薦組合、AI 總結建議。</span>
+        <strong>輸出：方案摘要 + 理專可讀報告</strong>
+        <span>相似個案只顯示「投保種類＋保額」，不顯示任何個案個資。</span>
       </div>
       <div class="badge">Output</div>
     </div>
 
     <div class="side">
-      <div class="split">
-        <div class="section">
-          <div class="row">
-            <div class="k">你的條件摘要</div>
-            <div class="v" id="summary">尚未生成</div>
-          </div>
-          <div class="row">
-            <div class="k">Top 相似個案（前 3 名）</div>
-            <div class="cards" id="similar"></div>
-          </div>
-        </div>
+      <div class="row">
+        <div class="k">客戶摘要</div>
+        <div class="v" id="summary">尚未生成</div>
+      </div>
 
-        <div class="section">
-          <div class="row">
-            <div class="k">推薦保單組合（由相似個案投保偏好彙整）</div>
-            <div class="cards" id="reco"></div>
+      <div class="row">
+        <div class="k">相似族群投保輪廓（Top 3）</div>
+        <div class="cards" id="similar"></div>
+      </div>
+
+      <div class="row">
+        <div class="k">法巴建議方案（示意）</div>
+        <div class="cards" id="reco"></div>
+      </div>
+
+      <div class="row">
+        <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;">
+          <div>
+            <div class="k">理專報告（AI 文字 Demo）</div>
+            <div class="small">用途：讓理專拿到這份報告時能快速理解客戶需求與建議重點。</div>
           </div>
         </div>
+        <div class="ai-box" id="reportBox">尚未生成</div>
+      </div>
 
-        <div class="section">
-          <div class="row">
-            <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;">
-              <div>
-                <div class="k">AI 總結小建議（Demo）</div>
-                <div class="small">目前用模板生成，未連外；你們要換成真正 AI 也很容易（我下面也會教）。</div>
-              </div>
-              <button class="ghost" id="genAi">生成建議</button>
-            </div>
-            <div class="ai-box" id="aiBox">尚未生成</div>
-          </div>
-        </div>
-
-        <div class="small">
-          <strong>提醒：</strong>此推薦為 Demo；正式版需加入：條款檢核、核保限制、保費估算、風險承受度問卷、以及資料治理（去識別化/權限控管）。
-        </div>
+      <div class="small">
+        <strong>提醒：</strong>此為提案 Demo。正式版需再加入：條款/等待期/除外責任檢核、核保限制、保費估算、KYC/適合度確認與資料治理。
       </div>
     </div>
   </aside>
@@ -445,104 +478,91 @@
 
 <script>
 /** =========================================================
- *  1) 案例資料庫（你們之後把這塊換成真實案例即可）
- *     欄位：使用者特徵 + 他最後選的投保組合（policies）
+ *  0) 你們之後最常改的兩塊
+ *     - CASE_DB：相似個案庫（去識別化後的投保輪廓）
+ *     - BNP_CATALOG：法巴商品目錄（可替換成市場現有商品名/型別）
  * ========================================================= */
+
+/** 相似個案庫（示範資料：只存特徵 + 投保種類/保額，不存任何個資） */
 const CASE_DB = [
   {
-    id:"C001",
-    gender:"生理男",
-    age:35,
-    jobRisk:2,
-    income:"300萬以上",
-    family:"核心家庭",
+    id:"SEG-A1", gender:"生理男", ageBand:"30-39", jobRisk:2, income:"300萬以上", family:"核心家庭",
     needs:["保障型保單","投資型保單"],
-    policies:[
-      {type:"醫療", name:"實支實付 + 住院日額", tags:["住院","手術","自費項目"]},
-      {type:"意外", name:"意外身故/失能 + 意外醫療", tags:["職業風險","通勤"]},
-      {type:"重大傷病", name:"重大傷病一次金", tags:["癌症/重大傷病","一次金"]},
-      {type:"投資型", name:"投資型保單（中高風險配置）", tags:["RR4","波動承擔"]},
+    coverages: [
+      {type:"醫療(實支)", amount: 1200000, unit:"NTD", note:"年度限額示意"},
+      {type:"意外", amount: 3000000, unit:"NTD", note:"身故/失能示意"},
+      {type:"重大傷病", amount: 2000000, unit:"NTD", note:"一次金示意"},
+      {type:"投資型", amount: 1000000, unit:"NTD", note:"首期投入示意"},
     ]
   },
   {
-    id:"C002",
-    gender:"生理女",
-    age:29,
-    jobRisk:1,
-    income:"70萬到150萬",
-    family:"單人戶",
+    id:"SEG-A2", gender:"生理男", ageBand:"30-39", jobRisk:2, income:"150萬到300萬", family:"核心家庭",
     needs:["保障型保單","儲蓄型保單"],
-    policies:[
-      {type:"醫療", name:"實支實付（基本）", tags:["住院","手術"]},
-      {type:"意外", name:"意外醫療 + 骨折/燒燙傷", tags:["生活風險"]},
-      {type:"儲蓄", name:"儲蓄型年金/定期儲蓄", tags:["穩健","長期"]},
+    coverages: [
+      {type:"醫療(實支)", amount: 1000000, unit:"NTD", note:"年度限額示意"},
+      {type:"意外", amount: 2000000, unit:"NTD", note:"身故/失能示意"},
+      {type:"壽險(定期)", amount: 5000000, unit:"NTD", note:"家庭責任期示意"},
+      {type:"儲蓄/年金", amount: 800000, unit:"NTD", note:"目標準備示意"},
     ]
   },
   {
-    id:"C003",
-    gender:"生理男",
-    age:52,
-    jobRisk:3,
-    income:"150萬到300萬",
-    family:"夫妻家庭",
-    needs:["保障型保單"],
-    policies:[
-      {type:"醫療", name:"實支實付（提高額度）", tags:["住院","高額自費"]},
-      {type:"重大傷病", name:"癌症/重大傷病一次金（加強）", tags:["家庭責任期"]},
-      {type:"壽險", name:"定期壽險（提高保障額）", tags:["家庭責任","保費效率"]},
-    ]
-  },
-  {
-    id:"C004",
-    gender:"生理女",
-    age:41,
-    jobRisk:2,
-    income:"150萬到300萬",
-    family:"核心家庭",
-    needs:["保障型保單","還本型保單"],
-    policies:[
-      {type:"醫療", name:"實支實付 + 住院日額", tags:["家庭照顧"]},
-      {type:"重大傷病", name:"重大傷病一次金", tags:["一次金"]},
-      {type:"還本", name:"還本型（注意解約/返還條件）", tags:["返還","條款限制"]},
-    ]
-  },
-  {
-    id:"C005",
-    gender:"生理男",
-    age:24,
-    jobRisk:4,
-    income:"70萬以下",
-    family:"單人戶",
-    needs:["保障型保單"],
-    policies:[
-      {type:"意外", name:"高職業等級意外方案", tags:["職業風險","較高保費"]},
-      {type:"醫療", name:"住院日額（入門）", tags:["保費敏感"]},
-    ]
-  },
-  {
-    id:"C006",
-    gender:"生理女",
-    age:67,
-    jobRisk:1,
-    income:"70萬到150萬",
-    family:"三代家庭",
+    id:"SEG-B1", gender:"生理女", ageBand:"20-29", jobRisk:1, income:"70萬到150萬", family:"單人戶",
     needs:["保障型保單","儲蓄型保單"],
-    policies:[
-      {type:"醫療", name:"醫療補強（門急診/住院）", tags:["高齡"]},
-      {type:"長照", name:"長照/失能扶助（示意）", tags:["照護","家庭負擔"]},
-      {type:"儲蓄", name:"保守型儲蓄/年金", tags:["穩健"]},
+    coverages: [
+      {type:"醫療(實支)", amount: 800000, unit:"NTD", note:"年度限額示意"},
+      {type:"意外", amount: 1500000, unit:"NTD", note:"身故/失能示意"},
+      {type:"儲蓄/年金", amount: 500000, unit:"NTD", note:"目標準備示意"},
     ]
-  }
+  },
+  {
+    id:"SEG-C1", gender:"生理男", ageBand:"50-59", jobRisk:3, income:"150萬到300萬", family:"夫妻家庭",
+    needs:["保障型保單"],
+    coverages: [
+      {type:"醫療(實支)", amount: 1500000, unit:"NTD", note:"高額自費示意"},
+      {type:"重大傷病", amount: 2500000, unit:"NTD", note:"一次金示意"},
+      {type:"壽險(定期)", amount: 3000000, unit:"NTD", note:"責任/負債示意"},
+    ]
+  },
+  {
+    id:"SEG-D1", gender:"生理男", ageBand:"20-29", jobRisk:5, income:"70萬以下", family:"單人戶",
+    needs:["保障型保單"],
+    coverages: [
+      {type:"意外", amount: 3000000, unit:"NTD", note:"高風險職業示意"},
+      {type:"醫療(住院日額)", amount: 2000, unit:"NTD/日", note:"住院日額示意"},
+    ]
+  },
+  {
+    id:"SEG-E1", gender:"生理女", ageBand:"60-69", jobRisk:1, income:"70萬到150萬", family:"三代家庭",
+    needs:["保障型保單","儲蓄型保單"],
+    coverages: [
+      {type:"醫療(實支)", amount: 1000000, unit:"NTD", note:"年度限額示意"},
+      {type:"長照/失能", amount: 30000, unit:"NTD/月", note:"照護扶助示意"},
+      {type:"儲蓄/年金", amount: 600000, unit:"NTD", note:"保守準備示意"},
+    ]
+  },
+];
+
+/** 法巴商品目錄（示意：你們可替換成法巴現有商品名/類別） */
+const BNP_CATALOG = [
+  { type:"醫療(實支)", product:"法國巴黎人壽｜醫療實支型方案（示意）", channel:"銀行通路", note:"住院/手術/自費項目相關設計，依條款為準" },
+  { type:"醫療(住院日額)", product:"法國巴黎人壽｜住院日額型方案（示意）", channel:"銀行通路", note:"日額給付，注意等待期/除外責任" },
+  { type:"意外", product:"法國巴黎人壽｜意外身故/失能＋意外醫療（示意）", channel:"銀行通路", note:"職業等級可能影響保費與承保" },
+  { type:"重大傷病", product:"法國巴黎人壽｜重大傷病一次金（示意）", channel:"銀行通路", note:"一次金便於支應重大支出" },
+  { type:"壽險(定期)", product:"法國巴黎人壽｜定期壽險（示意）", channel:"銀行通路", note:"家庭責任期常用，保費效率較佳" },
+  { type:"長照/失能", product:"法國巴黎人壽｜長照/失能扶助（示意）", channel:"銀行通路", note:"照護風險，注意給付認定與等待期" },
+  { type:"儲蓄/年金", product:"法國巴黎人壽｜儲蓄/年金型商品（示意）", channel:"銀行通路", note:"偏穩健資金準備，注意解約費用/期間" },
+  { type:"還本型", product:"法國巴黎人壽｜還本型商品（示意）", channel:"銀行通路", note:"返還條件/期間限制要對客說清楚" },
+  { type:"投資型", product:"法國巴黎人壽｜投資型保單（示意）", channel:"銀行通路", note:"非存款、不保本；淨值波動與費用會影響帳戶價值" },
 ];
 
 /** =========================================================
- *  2) 狀態 & UI 綁定
+ *  1) 狀態
  * ========================================================= */
 const state = {
   agree:false,
   gender:"",
-  age:null,
   ageBand:"",
+  jobTitle:"",
   jobRisk:null,
   income:"",
   family:"",
@@ -552,14 +572,31 @@ const state = {
 const $ = (s)=>document.querySelector(s);
 const $$ = (s)=>Array.from(document.querySelectorAll(s));
 
-function ageToBand(age){
-  const lo = Math.floor(age/10)*10;
-  const hi = lo+9;
-  return `${lo}-${hi}`;
+function validate(){
+  const ok =
+    state.agree &&
+    state.gender &&
+    state.ageBand &&
+    state.jobRisk &&
+    state.income &&
+    state.family;
+  return ok;
 }
 
+function sync(){
+  const ok = validate();
+  $("#run").disabled = !ok;
+  $("#genReport").disabled = !ok || !window.__last;
+  $("#copyReport").disabled = !window.__last || ($("#reportBox").textContent || "").includes("尚未生成");
+
+  $("#hint").textContent = ok ? "" : "請先勾選聲明，並完成：性別／年齡段／職業等級／年收入／家庭結構。";
+}
+
+/** =========================================================
+ *  2) 選項按鈕處理（取代 dropdown）
+ * ========================================================= */
 function setPressed(field, value){
-  $$(`.btn[data-field="${field}"]`).forEach(btn=>{
+  $$(`.opt[data-field="${field}"]`).forEach(btn=>{
     const on = btn.dataset.value === value;
     btn.setAttribute("aria-pressed", on ? "true":"false");
   });
@@ -575,59 +612,62 @@ function readNeeds(){
   sync();
 }
 
-function validate(){
-  const ok =
-    state.agree &&
-    state.gender &&
-    Number.isFinite(state.age) &&
-    state.age >= 0 &&
-    state.jobRisk &&
-    state.income &&
-    state.family;
-  return ok;
+/** =========================================================
+ *  3) 職業輸入 → 自動判斷職業危險等級（可手動覆寫）
+ *     (規則式：demo 用；你們可改成更完整職業對照表)
+ * ========================================================= */
+function inferJobRisk(jobTitle){
+  const t = (jobTitle || "").toLowerCase();
+
+  // high risk keywords
+  const high = ["工地","建築","鷹架","鋼構","焊接","礦","油","化工","消防","警察","保全","海巡","軍",
+                "貨車","卡車","司機","外送","機車","重機","高空","電塔","船員","漁","吊車","起重",
+                "工人","施工","搬運","倉儲","機械維修","救護"];
+  // medium risk
+  const mid = ["餐飲","廚師","服務生","護理","照服","物流","業務","銷售","教師體育","教練","美容","美髮","按摩","技術員"];
+  // low risk
+  const low = ["工程師","會計","行政","文書","人資","法務","金融","銀行","研究","設計","行銷","客服","學生","老師","教授"];
+
+  const hit = (arr)=>arr.some(k=>t.includes(k));
+
+  if(hit(high)) return {level:5, reason:"職業關鍵字顯示高活動/高風險工作型態"};
+  if(hit(mid))  return {level:3, reason:"職業型態可能具一定活動與風險暴露"};
+  if(hit(low))  return {level:1, reason:"多為室內/相對低風險工作型態"};
+
+  // default
+  return {level:2, reason:"資訊不足，先以一般等級估計（建議理專再確認工作內容）"};
 }
 
-function sync(){
-  $("#run").disabled = !validate();
-  if(!state.agree){
-    $("#hint").textContent = "請先勾選個資/使用聲明，並完成必要欄位。";
-  }else{
-    $("#hint").textContent = "";
-  }
+function autoSelectJobRisk(level){
+  // set UI pressed
+  $$(`.opt[data-field="jobRisk"]`).forEach(btn=>{
+    const on = Number(btn.dataset.value) === Number(level);
+    btn.setAttribute("aria-pressed", on ? "true":"false");
+  });
+  state.jobRisk = Number(level);
 }
 
 /** =========================================================
- *  3) 相似度計算（Case-Based Recommendation）
- *     你們之後可以把權重改成模型學出來的
+ *  4) 相似度計算（不顯示個案資料，只用於內部比對）
  * ========================================================= */
 function overlapScore(a, b){
   if(!a.length || !b.length) return 0;
-  const A = new Set(a);
-  const B = new Set(b);
+  const A = new Set(a), B = new Set(b);
   let inter=0;
   for(const x of A) if(B.has(x)) inter++;
   const union = new Set([...A, ...B]).size;
-  return inter / union; // Jaccard
+  return inter / union;
 }
 
 function similarity(user, c){
-  // 權重可調整（demo）
   let score = 0;
-
-  // 類別欄位：相同給分
+  // weights tuned for demo
   score += (user.gender === c.gender) ? 1.2 : 0;
+  score += (user.ageBand === c.ageBand) ? 1.3 : 0;
   score += (user.income === c.income) ? 1.2 : 0;
   score += (user.family === c.family) ? 1.0 : 0;
-
-  // 職業等級：越接近越好
-  score += Math.max(0, 1.2 - 0.3*Math.abs(user.jobRisk - c.jobRisk));
-
-  // 年齡：差距越小越好
-  score += Math.max(0, 1.4 - 0.05*Math.abs(user.age - c.age));
-
-  // 需求：重疊度（可複選）
+  score += Math.max(0, 1.2 - 0.35*Math.abs(user.jobRisk - c.jobRisk));
   score += 1.6 * overlapScore(user.needs, c.needs);
-
   return score;
 }
 
@@ -638,86 +678,103 @@ function topSimilarCases(user, k=3){
 }
 
 /** =========================================================
- *  4) 從相似個案彙整推薦（投保組合投票/加權）
+ *  5) 彙整：從相似個案推導「類別」與「常見保額」
  * ========================================================= */
-function aggregateRecommendations(simCases){
-  // 用相似度當權重做投票
-  const map = new Map(); // key -> {weight, item}
+function median(nums){
+  if(!nums.length) return null;
+  const a = [...nums].sort((x,y)=>x-y);
+  const m = Math.floor(a.length/2);
+  return a.length%2 ? a[m] : (a[m-1]+a[m])/2;
+}
+
+function aggregateCoverage(simCases){
+  // group by type + unit
+  const map = new Map(); // key -> {type, unit, amounts[], count, weight}
   for(const c of simCases){
-    for(const p of c.policies){
-      const key = `${p.type}::${p.name}`;
-      const w = c.sim;
+    for(const cv of c.coverages){
+      const key = `${cv.type}::${cv.unit}`;
       if(!map.has(key)){
-        map.set(key, {weight:w, item:p, count:1});
+        map.set(key, {type: cv.type, unit: cv.unit, amounts:[cv.amount], count:1, weight:c.sim});
       }else{
-        const obj = map.get(key);
-        obj.weight += w;
-        obj.count += 1;
+        const o = map.get(key);
+        o.amounts.push(cv.amount);
+        o.count += 1;
+        o.weight += c.sim;
       }
     }
   }
-  const arr = Array.from(map.values());
-  arr.sort((a,b)=>b.weight-a.weight);
-  return arr.slice(0,6);
+  const arr = Array.from(map.values())
+    .map(o => ({...o, typical: median(o.amounts)}))
+    .sort((a,b)=>b.weight-a.weight);
+
+  return arr;
+}
+
+function pickBnpProduct(type){
+  // exact match first
+  const p = BNP_CATALOG.find(x=>x.type===type);
+  if(p) return p;
+
+  // fallback: fuzzy by prefix
+  const p2 = BNP_CATALOG.find(x=>type.startsWith(x.type.split("(")[0]));
+  return p2 || {type, product:"法國巴黎人壽｜（待補商品名）", channel:"銀行通路", note:"請替換成法巴實際商品" };
 }
 
 /** =========================================================
- *  5) AI 小建議（本地模板生成版）
- *     你們之後要接真的 AI：把 generateAiAdvice() 改成 call API 即可
+ *  6) 依客戶條件加強「應該納入的類別」
+ *     - 若相似個案沒出現也可補（例如：家庭責任期 → 壽險）
  * ========================================================= */
-function personaHints(user){
-  const hints = [];
-  if(user.age>=30 && user.age<=49) hints.push("處於家庭責任/收入成長期，建議先把「保障缺口」補齊再談進階配置。");
-  if(user.age>=60) hints.push("高齡階段建議優先檢視醫療與照護風險（門急診/住院/長照等）。");
-  if(user.jobRisk>=4) hints.push("職業危險等級較高，意外/失能的保障重要性上升。");
-  if(user.family.includes("核心") || user.family.includes("三代")) hints.push("家庭結構可能帶來照護/教育/扶養支出風險，建議提高保障額與一次金設計。");
-  return hints;
-}
+function personaTypeBoost(user){
+  const wanted = new Set();
 
-function generateAiAdvice(user, simCases, recos){
-  const needsLine = user.needs.length ? `需求偏好：${user.needs.join("、")}` : "尚未勾選需求偏好（建議至少勾選「保障型」或「投資型」）。";
-  const topCase = simCases[0];
-  const whyLike = [
-    `性別${user.gender===topCase.gender?"相同":"不同"}`,
-    `年齡差${Math.abs(user.age-topCase.age)}歲`,
-    `職業等級差${Math.abs(user.jobRisk-topCase.jobRisk)}`,
-    `收入${user.income===topCase.income?"同區間":"不同區間"}`,
-    `家庭結構${user.family===topCase.family?"相同":"不同"}`
-  ].join("、");
+  // 基本：保障型 → 醫療/意外/重大傷病
+  if(user.needs.includes("保障型保單") || user.needs.length===0){
+    wanted.add("醫療(實支)");
+    wanted.add("意外");
+    wanted.add("重大傷病");
+  }
 
-  const bullets = recos.slice(0,4).map(x=>`- ${x.item.type}：${x.item.name}（相似個案採用 ${x.count} 次）`).join("\n");
+  // 家庭責任：核心/夫妻/單親/三代 → 壽險
+  if(["核心家庭","夫妻家庭","單親家庭","三代家庭","祖孫家庭"].includes(user.family)){
+    wanted.add("壽險(定期)");
+  }
 
-  const hints = personaHints(user);
-  const hintText = hints.length ? hints.map(h=>`- ${h}`).join("\n") : "- 目前條件下建議以基本保障盤點為主，確認缺口後再加碼進階型商品。";
+  // 高職業風險 → 意外強化
+  if(user.jobRisk>=4){
+    wanted.add("意外");
+  }
 
-  const disclaimer =
-`【提醒】本建議為 Demo：以相似個案投保偏好做推論，非核保/理賠承諾；實際商品需依條款、等待期、除外責任、健康告知與核保結果為準。投資型保單非存款、不保本，淨值可能波動。`;
+  // 高齡 → 長照/失能 + 醫療補強
+  if(user.ageBand.startsWith("60") || user.ageBand==="70+"){
+    wanted.add("長照/失能");
+    wanted.add("醫療(實支)");
+  }
 
-  return `【AI 總結建議（Demo）】
-你目前的條件：${user.gender}、${user.age}歲（${user.ageBand}）、職業等級${user.jobRisk}、${user.income}、${user.family}
-${needsLine}
+  // 儲蓄/還本/投資
+  if(user.needs.includes("儲蓄型保單")) wanted.add("儲蓄/年金");
+  if(user.needs.includes("還本型保單")) wanted.add("還本型");
+  if(user.needs.includes("投資型保單")) wanted.add("投資型");
 
-【相似個案依據】
-最相近個案：${topCase.id}（相似度 ${topCase.sim.toFixed(2)}）
-相似原因：${whyLike}
-
-【建議的投保組合（由相似個案彙整）】
-${bullets}
-
-【下一步建議】
-${hintText}
-- 建議你先確認現有保障（若有）與保費可負擔範圍，再微調保障額度與商品型態。
-- 若要更精準：可加入「現有保單/保額、健康狀況、風險承受度問卷」做缺口計算。
-
-${disclaimer}`;
+  return wanted;
 }
 
 /** =========================================================
- *  6) Render
+ *  7) Render
  * ========================================================= */
+function fmtAmount(a, unit){
+  if(a==null) return "—";
+  if(unit==="NTD"){
+    // show in 萬 if big
+    if(a>=1000000) return `${Math.round(a/10000)} 萬`;
+    return `${a.toLocaleString()} 元`;
+  }
+  return `${a.toLocaleString()} ${unit}`;
+}
+
 function renderSummary(){
+  const jobTxt = state.jobTitle ? `｜職業：${state.jobTitle}` : "";
   $("#summary").textContent =
-    `${state.gender || "—"}｜${state.age ?? "—"}歲（${state.ageBand || "—"}）｜職業等級${state.jobRisk ?? "—"}｜${state.income||"—"}｜${state.family||"—"}｜需求：${state.needs.length?state.needs.join("、"):"未選"}`;
+    `${state.gender}｜${state.ageBand}｜職業等級 ${state.jobRisk}｜${state.income}｜${state.family}${jobTxt}｜需求：${state.needs.length?state.needs.join("、"):"未選"}`;
 }
 
 function renderSimilar(simCases){
@@ -726,127 +783,236 @@ function renderSimilar(simCases){
     el.innerHTML = `<div class="small">尚未生成</div>`;
     return;
   }
-  el.innerHTML = simCases.map(c=>`
+
+  // Only show coverages (no case demographics)
+  el.innerHTML = simCases.map((c, idx)=>`
     <div class="reco-card">
-      <h3>個案 ${c.id} <span style="color:#0b6b57">（相似度 ${c.sim.toFixed(2)}）</span></h3>
+      <h3>相似輪廓 #${idx+1} <span style="color:#0b6b57">（相似度 ${c.sim.toFixed(2)}）</span></h3>
       <div class="meta">
-        ${c.gender}｜${c.age}歲｜職業${c.jobRisk}｜${c.income}｜${c.family}<br/>
-        需求：${c.needs.join("、")}
+        ${c.coverages.map(cv=>`• ${cv.type}：${fmtAmount(cv.amount, cv.unit)}（${cv.note||"示意"}）`).join("<br/>")}
       </div>
       <div class="tags">
-        ${c.policies.slice(0,3).map(p=>`<span class="tag">${p.type}</span>`).join("")}
-        ${c.policies.length>3 ? `<span class="tag">+${c.policies.length-3}</span>` : ""}
+        ${c.coverages.map(cv=>`<span class="tag">${cv.type}</span>`).slice(0,6).join("")}
       </div>
     </div>
   `).join("");
 }
 
-function renderReco(recos){
+function renderRecoCards(recoItems){
   const el = $("#reco");
-  if(!recos.length){
+  if(!recoItems.length){
     el.innerHTML = `<div class="small">尚未生成</div>`;
     return;
   }
-  el.innerHTML = recos.map(r=>`
-    <div class="reco-card">
-      <h3>${r.item.type}｜${r.item.name}</h3>
-      <div class="meta">相似個案採用：${r.count} 次｜加權分數：${r.weight.toFixed(2)}</div>
-      <div class="tags">
-        ${(r.item.tags||[]).map(t=>`<span class="tag">${t}</span>`).join("")}
+
+  el.innerHTML = recoItems.map(r=>{
+    const p = pickBnpProduct(r.type);
+    return `
+      <div class="reco-card">
+        <h3>${r.type}｜${p.product}</h3>
+        <div class="meta">
+          建議保額（參考相似族群）：<strong>${fmtAmount(r.typical, r.unit)}</strong><br/>
+          參考次數：${r.count}｜通路：${p.channel}<br/>
+          說明：${p.note}
+        </div>
+        <div class="tags">
+          <span class="tag">法巴</span>
+          <span class="tag">銀行通路</span>
+          <span class="tag">相似個案推導</span>
+        </div>
       </div>
-    </div>
-  `).join("");
+    `;
+  }).join("");
 }
 
 /** =========================================================
- *  7) Events
+ *  8) 生成「理專報告」（AI 文字 Demo：更像交付文件）
+ * ========================================================= */
+function reportPersonaInsights(user){
+  const bullets = [];
+  if(user.ageBand==="30-39" || user.ageBand==="40-49") bullets.push("處於家庭責任與資產累積階段，建議先以保障缺口盤點為主，再評估進階型商品。");
+  if(user.ageBand==="50-59") bullets.push("進入健康風險上升期，重大傷病與醫療自費支出風險須更被看見。");
+  if(user.ageBand.startsWith("60") || user.ageBand==="70+") bullets.push("高齡階段應優先檢視醫療與照護/失能風險，並確認可承保與等待期條件。");
+  if(user.jobRisk>=4) bullets.push("職業風險偏高：意外/失能保障建議提高並確認職業等級承保規則。");
+  if(["核心家庭","三代家庭","祖孫家庭","單親家庭"].includes(user.family)) bullets.push("家庭結構顯示扶養/照護責任：壽險一次金或定期壽險可作為支出風險緩衝。");
+  if(user.needs.includes("投資型保單")) bullets.push("有投資型需求：需先確認風險承受度與波動理解（非存款、不保本），並搭配保障型避免本末倒置。");
+  if(user.needs.includes("還本型保單")) bullets.push("偏好還本型：務必向客戶清楚說明返還條件、期間、解約費用與保障本質。");
+  if(user.needs.includes("儲蓄型保單")) bullets.push("偏好儲蓄/年金：可作資金準備，但仍需先確保基本保障不缺口。");
+
+  if(!bullets.length) bullets.push("建議理專先用基本問診式提問釐清：客戶優先目標（保障缺口 / 資金準備 / 報酬）與可負擔保費。");
+  return bullets;
+}
+
+function typeDistribution(simCases){
+  const m = new Map(); // type -> count
+  for(const c of simCases){
+    for(const cv of c.coverages){
+      m.set(cv.type, (m.get(cv.type)||0) + 1);
+    }
+  }
+  const arr = Array.from(m.entries()).sort((a,b)=>b[1]-a[1]);
+  return arr;
+}
+
+function generateAdvisorReport(user, simCases, recoAgg){
+  const needsLine = user.needs.length ? user.needs.join("、") : "未選（建議至少確認保障型需求）";
+  const jobLine = user.jobTitle ? `職業：${user.jobTitle}（系統估等級 ${user.jobRisk}，建議理專再確認工作內容）` : `職業等級：${user.jobRisk}`;
+  const dist = typeDistribution(simCases).map(([t,c])=>`- ${t}：出現於 ${c}/3 個相似輪廓`).join("\n");
+
+  const topRecs = recoAgg.slice(0,6).map(r=>{
+    const p = pickBnpProduct(r.type);
+    return `- ${r.type}：${fmtAmount(r.typical, r.unit)}（${p.product}｜${p.channel}）`;
+  }).join("\n");
+
+  const insights = reportPersonaInsights(user).map(x=>`- ${x}`).join("\n");
+
+  const questions = [
+    "目前是否已有既有保單？各類保額/附約/等待期/除外責任為何？",
+    "家中主要經濟支柱是誰？若發生重大事故，家庭月支出能支撐多久？",
+    "醫療自費項目（手術、住院、門急診）是否有備用金？",
+    "對『一次金』的偏好（重大傷病/癌症）是否能接受？",
+    "若涉及投資型：可接受帳戶價值波動幅度？最在意報酬還是穩定？"
+  ].map(q=>`- ${q}`).join("\n");
+
+  const disclaimer =
+`【合規提醒（摘要）】
+- 本報告為需求分析輔助文件，非承諾給付或核保結果。
+- 實際承保、費率、給付條件、等待期、除外責任，以法巴保單條款與核保為準。
+- 投資型保單非存款、不保本；費用、匯率與淨值波動會影響帳戶價值。`;
+
+  return `《法國巴黎人壽｜理專需求分析報告（Demo）》
+【客戶概況】
+- 基本：${user.gender}｜年齡段 ${user.ageBand}｜${user.income}｜${user.family}
+- ${jobLine}
+- 投保需求偏好：${needsLine}
+
+【相似客群投保輪廓（依 Top 3 相似輪廓彙整）】
+${dist}
+
+【建議投保組合（法巴｜示意）】
+${topRecs}
+
+【需求推論與建議重點】
+${insights}
+
+【建議理專訪談提問（加速定案）】
+${questions}
+
+${disclaimer}`;
+}
+
+/** =========================================================
+ *  9) Event bindings
  * ========================================================= */
 $("#agree").addEventListener("change", e=>{
   state.agree = e.target.checked;
   sync();
 });
 
-$$("#needs input[type='checkbox']").forEach(c=>{
-  c.addEventListener("change", readNeeds);
-});
-
-$("#age").addEventListener("input", e=>{
-  const v = Number(e.target.value);
-  state.age = Number.isFinite(v) ? v : null;
-  state.ageBand = (Number.isFinite(v) ? ageToBand(v) : "");
-  sync();
-});
-
-$("#income").addEventListener("change", e=>{
-  state.income = e.target.value;
-  sync();
-});
-$("#family").addEventListener("change", e=>{
-  state.family = e.target.value;
-  sync();
-});
-
-$$(".btn[data-field]").forEach(btn=>{
+$$(".opt[data-field]").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     setPressed(btn.dataset.field, btn.dataset.value);
   });
 });
 
+$$("#needs input[type='checkbox']").forEach(c=>{
+  c.addEventListener("change", readNeeds);
+});
+
+$("#jobTitle").addEventListener("input", e=>{
+  state.jobTitle = e.target.value || "";
+  const r = inferJobRisk(state.jobTitle);
+  $("#jobHint").innerHTML = `系統判斷：<strong>等級 ${r.level}</strong>（${r.reason}）<br/><span class="help">可直接手動改等級，系統會以你手動選的為準。</span>`;
+  // auto-select only if user hasn't manually set jobRisk yet OR if input changes frequently, we still auto
+  autoSelectJobRisk(r.level);
+  sync();
+});
+
 $("#run").addEventListener("click", ()=>{
-  // 1) summary
   renderSummary();
 
-  // 2) similar
   const simCases = topSimilarCases(state, 3);
   renderSimilar(simCases);
 
-  // 3) aggregate reco
-  const recos = aggregateRecommendations(simCases);
-  renderReco(recos);
+  // aggregate from similar
+  const agg = aggregateCoverage(simCases);
 
-  // 4) clear AI box (讓使用者手動點生成)
-  $("#aiBox").textContent = "已生成推薦結果。點右上角「生成建議」即可產生 AI 總結。";
+  // boost types by persona even if missing in agg
+  const wanted = personaTypeBoost(state);
+  for(const t of wanted){
+    const exists = agg.some(x=>x.type===t);
+    if(!exists){
+      // create a placeholder item if no similar data
+      agg.push({type:t, unit:"NTD", amounts:[], typical:null, count:0, weight:0.01});
+    }
+  }
 
-  // cache latest
-  window.__last = {simCases, recos};
+  // sort again by weight then by wanted presence
+  agg.sort((a,b)=>b.weight-a.weight);
+
+  // pick top for display (6)
+  const recoAgg = agg.slice(0,6);
+  renderRecoCards(recoAgg);
+
+  window.__last = { simCases, recoAgg };
+
+  $("#genReport").disabled = false;
+  $("#copyReport").disabled = false;
+
+  $("#reportBox").textContent = "已生成相似輪廓與建議方案。點「生成理專報告（AI 文字）」可輸出可讀說明。";
+  sync();
 });
 
-$("#genAi").addEventListener("click", ()=>{
+$("#genReport").addEventListener("click", ()=>{
   if(!window.__last){
-    $("#aiBox").textContent = "請先按「找相似個案並推薦」。";
+    $("#reportBox").textContent = "請先按「找相似個案 → 產生法巴建議」。";
     return;
   }
-  const {simCases, recos} = window.__last;
-  $("#aiBox").textContent = generateAiAdvice(state, simCases, recos);
+  const {simCases, recoAgg} = window.__last;
+  $("#reportBox").textContent = generateAdvisorReport(state, simCases, recoAgg);
+  sync();
+});
+
+$("#copyReport").addEventListener("click", async ()=>{
+  const text = $("#reportBox").textContent || "";
+  if(!text || text.includes("尚未生成")){
+    alert("請先生成理專報告。");
+    return;
+  }
+  try{
+    await navigator.clipboard.writeText(text);
+    alert("已複製理專報告到剪貼簿。");
+  }catch{
+    alert("複製失敗：瀏覽器可能限制 clipboard。你可以手動全選報告文字複製。");
+  }
 });
 
 $("#reset").addEventListener("click", ()=>{
   // reset state
-  state.agree=false; state.gender=""; state.age=null; state.ageBand="";
-  state.jobRisk=null; state.income=""; state.family=""; state.needs=[];
+  state.agree=false; state.gender=""; state.ageBand="";
+  state.jobTitle=""; state.jobRisk=null; state.income=""; state.family=""; state.needs=[];
+  window.__last = null;
 
   $("#agree").checked=false;
-  $("#age").value="";
-  $("#income").value="";
-  $("#family").value="";
-  $$(".btn[data-field]").forEach(btn=>btn.setAttribute("aria-pressed","false"));
+  $("#jobTitle").value="";
+  $("#jobHint").innerHTML = `系統判斷：<strong>尚未判斷</strong>（你仍可手動點選等級）`;
+
+  // clear pressed
+  $$(".opt[data-field]").forEach(btn=>btn.setAttribute("aria-pressed","false"));
+
+  // clear needs
   $$("#needs input[type='checkbox']").forEach(c=>c.checked=false);
   readNeeds();
 
   $("#summary").textContent = "尚未生成";
   $("#similar").innerHTML = `<div class="small">尚未生成</div>`;
   $("#reco").innerHTML = `<div class="small">尚未生成</div>`;
-  $("#aiBox").textContent = "尚未生成";
-  window.__last = null;
+  $("#reportBox").textContent = "尚未生成";
+
+  $("#genReport").disabled = true;
+  $("#copyReport").disabled = true;
 
   sync();
-});
-
-$("#showDb").addEventListener("click", ()=>{
-  const preview = CASE_DB.slice(0,6).map(c =>
-    `${c.id}｜${c.gender}｜${c.age}｜職業${c.jobRisk}｜${c.income}｜${c.family}｜需求：${c.needs.join("、")}｜投保：${c.policies.map(p=>p.type).join("+")}`
-  ).join("\n");
-  alert("案例資料庫（前 6 筆預覽）\n\n" + preview + "\n\n你們之後可把 CASE_DB 換成真實(去識別化)案例。");
 });
 
 // init
