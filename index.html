@@ -18,7 +18,7 @@
           <p>運用相似客群投保輪廓，提供個人化保險規劃建議</p>
         </div>
       </div>
-      <div class="status-badge">🚀 商業競賽 Demo 版本</div>
+      <div class="status-badge">商業競賽 Demo 版本</div>
     </div>
   </header>
 
@@ -49,7 +49,7 @@
         <!-- Left: Input -->
         <div class="card">
           <div class="card-header">
-            <h2>📋 客戶資料輸入</h2>
+            <h2>客戶資料輸入</h2>
             <p>請填寫以下資訊，系統將自動匹配相似客群投保輪廓</p>
           </div>
 
@@ -58,7 +58,7 @@
             <div class="consent-box">
               <input id="agree" type="checkbox" />
               <div class="text">
-                <strong>⚠️ 重要聲明（Demo 版本）</strong>
+                <strong>重要聲明</strong>
                 本工具僅供概念展示：資料不會上傳伺服器；內容為輔助理解之建議，不構成投保/投資/稅務建議；實際投保以法巴保單條款、核保與銀行通路規範為準。
               </div>
             </div>
@@ -69,8 +69,8 @@
               <div class="field" data-field="gender">
                 <label class="field-label">性別</label>
                 <div class="options cols-2">
-                  <button class="option-btn" data-field="gender" data-value="生理男" aria-pressed="false">👨 生理男</button>
-                  <button class="option-btn" data-field="gender" data-value="生理女" aria-pressed="false">👩 生理女</button>
+                  <button class="option-btn" data-field="gender" data-value="生理男" aria-pressed="false">生理男</button>
+                  <button class="option-btn" data-field="gender" data-value="生理女" aria-pressed="false">生理女</button>
                 </div>
               </div>
 
@@ -140,35 +140,35 @@
               <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;">
                 <label class="field-label" style="margin:0;">投保需求為何？（可複選）</label>
                 <button class="btn btn-secondary" id="autoNeeds" type="button" style="padding:8px 12px; font-size:12px;">
-                  ✨ 不確定？幫我推薦
+                  不確定？幫我推薦
                 </button>
               </div>
               <div class="checkbox-grid" id="needs">
                 <label class="checkbox-card">
                   <input type="checkbox" value="保障型保單" />
-                  <div class="label"><strong>🛡️ 保障型</strong><small>醫療/意外/重大傷病/壽險缺口補強</small></div>
+                  <div class="label"><strong>保障型</strong><small>醫療/意外/重大傷病/壽險缺口補強</small></div>
                 </label>
                 <label class="checkbox-card">
                   <input type="checkbox" value="儲蓄型保單" />
-                  <div class="label"><strong>💰 儲蓄型</strong><small>穩健資金準備、偏保守</small></div>
+                  <div class="label"><strong>儲蓄型</strong><small>穩健資金準備、偏保守</small></div>
                 </label>
                 <label class="checkbox-card">
                   <input type="checkbox" value="還本型保單" />
-                  <div class="label"><strong>🔄 還本型</strong><small>期滿返還設計（注意條款限制）</small></div>
+                  <div class="label"><strong>還本型</strong><small>期滿返還設計（注意條款限制）</small></div>
                 </label>
                 <label class="checkbox-card">
                   <input type="checkbox" value="投資型保單" />
-                  <div class="label"><strong>📈 投資型</strong><small>追求報酬、承擔波動（非保本）</small></div>
+                  <div class="label"><strong>投資型</strong><small>追求報酬、承擔波動（非保本）</small></div>
                 </label>
               </div>
             </div>
 
             <!-- Actions -->
             <div class="actions">
-              <button class="btn btn-primary" id="run" disabled>🔍 分析並產生推薦方案</button>
-              <button class="btn btn-secondary" id="genReport" disabled>📄 生成理專報告</button>
-              <button class="btn btn-secondary" id="copyReport" disabled>📋 複製報告</button>
-              <button class="btn btn-secondary" id="reset">🔄 清除重填</button>
+              <button class="btn btn-primary" id="run" disabled>分析並產生推薦方案</button>
+              <button class="btn btn-secondary" id="genReport" disabled>生成理專報告</button>
+              <button class="btn btn-secondary" id="copyReport" disabled>複製報告</button>
+              <button class="btn btn-secondary" id="reset">清除重填</button>
             </div>
 
             <div class="alert alert-warning" id="hint" style="display:none;"></div>
@@ -178,7 +178,7 @@
         <!-- 新增：進度追蹤 -->
         <div class="mini">
           <div class="mini-head">
-            <h3>✅ 填寫進度</h3>
+            <h3>填寫進度</h3>
             <div style="font-size:12px;color:var(--text-muted);font-weight:900;" id="draftState">草稿：未儲存</div>
           </div>
           <div class="mini-body">
@@ -195,7 +195,7 @@
         <!-- 新增：快速預覽 -->
         <div class="mini">
           <div class="mini-head">
-            <h3>👀 即時預覽</h3>
+            <h3>即時預覽</h3>
             <div style="font-size:12px;color:var(--text-muted);font-weight:900;" id="previewTag">尚未完成</div>
           </div>
           <div class="mini-body">
@@ -214,7 +214,7 @@
         <!-- 新增：情境推薦 -->
         <div class="mini">
           <div class="mini-head">
-            <h3>💡 情境推薦</h3>
+            <h3>情境推薦</h3>
             <div style="font-size:12px;color:var(--text-muted);font-weight:900;">即時提示</div>
           </div>
           <div class="mini-body">
@@ -227,7 +227,7 @@
         <!-- 新增：FAQ / 說明表 -->
         <div class="mini">
           <div class="mini-head">
-            <h3>📚 輔助資訊</h3>
+            <h3>輔助資訊</h3>
             <div style="font-size:12px;color:var(--text-muted);font-weight:900;">可折疊</div>
           </div>
           <div class="mini-body">
@@ -286,7 +286,7 @@
             </div>
 
             <div style="font-size:12px;color:var(--text-muted);margin-top:8px;">
-              小提醒：這些說明文字很加分，評審會覺得你們懂合規/適配。
+              小提醒：以下資訊用於協助理解保障內容與投保條件，提升選擇的準確性。
             </div>
           </div>
         </div>
@@ -296,7 +296,7 @@
       <div class="output-section">
         <div class="card">
           <div class="card-header">
-            <h2>📊 分析結果與推薦方案</h2>
+            <h2>分析結果與推薦方案</h2>
             <p>基於相似客群投保輪廓的智能推薦</p>
           </div>
 
@@ -304,7 +304,7 @@
             <!-- Loader (AI 模擬分析進度) -->
             <div class="loader" id="loader">
               <div class="loader-top">
-                <div>🤖 AI 分析中：正在匹配相似客群、彙整保額、生成報告架構…</div>
+                <div>AI 分析中：正在匹配相似客群、彙整保額、生成報告架構…</div>
                 <div id="loaderPct">0%</div>
               </div>
               <div class="loader-bar"><div id="loaderFill"></div></div>
@@ -316,9 +316,9 @@
 
             <!-- Tabs -->
             <div class="tabs" style="margin-top:6px;">
-              <button class="tab active" data-tab="t-sim">👥 相似輪廓</button>
-              <button class="tab" data-tab="t-reco">🎯 建議方案</button>
-              <button class="tab" data-tab="t-report">📝 理專報告</button>
+              <button class="tab active" data-tab="t-sim">相似輪廓</button>
+              <button class="tab" data-tab="t-reco">建議方案</button>
+              <button class="tab" data-tab="t-report">理專報告</button>
             </div>
 
             <div id="t-sim" class="tab-panel active">
@@ -362,9 +362,9 @@
 
     <!-- Floating action bar -->
     <div class="fab" id="fab">
-      <button class="fab-btn alt" id="fabPrint" type="button">🖨️ 列印/下載PDF</button>
-      <button class="fab-btn alt" id="fabShare" type="button">🔗 分享</button>
-      <button class="fab-btn" id="fabCopy" type="button">📋 複製報告</button>
+      <button class="fab-btn alt" id="fabPrint" type="button">列印/下載PDF</button>
+      <button class="fab-btn alt" id="fabShare" type="button">分享</button>
+      <button class="fab-btn" id="fabCopy" type="button">複製報告</button>
     </div>
 
     <div class="toast" id="toast">已儲存</div>
@@ -373,3 +373,4 @@
   <script src="index.js"></script>
 </body>
 </html>
+
